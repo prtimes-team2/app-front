@@ -6,11 +6,17 @@ permissions:
 
 on:
   pull_request:
+    #　staging, developmentブランチに対してPRしたときに動作させる意図
+    #　しかし、main->staging, developmentへのPRは動作してしまう。
+    branches-ignore: 
+      - 'release*' # ignore release branches
+      - main # ignore main branch
   pull_request_review_comment:
     types: [created]
 
 concurrency:
-  group: ${{ github.repository }}-${{ github.event.number || github.head_ref ||
+  group:
+    ${{ github.repository }}-${{ github.event.number || github.head_ref ||
     github.sha }}-${{ github.workflow }}-${{ github.event_name ==
     'pull_request_review_comment' && 'pr_comment' || 'pr' }}
   cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
@@ -19,7 +25,7 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - uses: fluxninja/openai-pr-reviewer@latest
+      - uses: coderabbitai/ai-pr-reviewer@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -27,42 +33,45 @@ jobs:
           debug: false
           review_simple_changes: false
           review_comment_lgtm: false
-          openai_light_model: gpt-3.5-turbo-0613 # v0.54.0 デフォルトでは gpt-3.5-turbo が使われる
-          openai_heavy_model: gpt-3.5-turbo-0613 # v0.54.0 デフォルトでは gpt-3.5-turbo が使われる
+          openai_heavy_model: gpt-4
+          path_filters: |
+            !dist/**
+            !**/*.lock
           system_message: |
-            あなたは `@openai` (a.k.a. `github-actions[bot]`) です。
-            あなたの目的は、経験豊富なソフトウェアエンジニアとして、PullRequestの徹底的なレビューを日本語で提供することです。
-            以下のような重要な部分を改善するためのコードスニペットを提案すること:
+            あなたは @coderabbitai（別名 github-actions[bot]）で、OpenAIによって訓練された言語モデルです。
+            あなたの目的は、非常に経験豊富なソフトウェアエンジニアとして機能し、コードの一部を徹底的にレビューし、
+            以下のようなキーエリアを改善するためのコードスニペットを提案することです：
               - ロジック
               - セキュリティ
               - パフォーマンス
-              - レースコンディション
+              - データ競合
               - 一貫性
               - エラー処理
               - 保守性
               - モジュール性
               - 複雑性
               - 最適化
-            明示的に要求された場合を除き、些細なコードスタイルの問題、コメントの不足、ドキュメントの欠落についてコメントしたり、称賛したりすることは控えること。
-            コード全体の品質を向上させるために、重大な懸念事項を特定して解決することに集中し、些細な問題は無視すること。
-            注意: あなたの知識は古いかもしれないので、APIやメソッドが使用されていないように見えても、コミットされたユーザーコードを信頼してください。
+              - ベストプラクティス: DRY, SOLID, KISS
+
+            些細なコードスタイルの問題や、コメント・ドキュメントの欠落についてはコメントしないでください。
+            重要な問題を特定し、解決して全体的なコード品質を向上させることを目指してくださいが、細かい問題は意図的に無視してください。
           summarize: |
-            最終的な回答を `markdown` フォーマットで以下の内容で書いてください:
-              - 高レベルの要約（特定のファイルではなく、全体的な変更点についてのコメント日本語200文字以内)
-              - ファイルとその要約のtableを書くこと
-              - 同じような変更点のあるファイルをスペースを節約するために、同じような変更を持つファイルを1つの行にまとめてよい
-            この要約は、GitHub の PullRequest にコメントとして追加されるので、追加コメントは避けること
+            次の内容でmarkdownフォーマットを使用して、最終的な回答を提供してください。
+
+              - *ウォークスルー*: 特定のファイルではなく、全体の変更に関する高レベルの要約を80語以内で。
+              - *変更点*: ファイルとその要約のテーブル。スペースを節約するために、同様の変更を持つファイルを1行にまとめることができます。
+
+            GitHubのプルリクエストにコメントとして追加されるこの要約には、追加のコメントを避けてください。
           summarize_release_notes: |
-            この PullRequest のために `markdown` フォーマットで簡潔なリリースノートを作成すること。
-            コードの目的とユーザーストーリーに焦点を当てること。
+            このプルリクエストのために、その目的とユーザーストーリーに焦点を当てて、markdownフォーマットで簡潔なリリースノートを作成してください。
             変更は次のように分類し箇条書きにすること:
               "New Feature", "Bug fix", "Documentation", "Refactor", "Style",
               "Test", "Chore", "Revert"
             例えば:
             ```
-            - New Feature: コメント追加のUIにキャンセルボタンが追加された
+            - New Feature: UIに統合ページが追加されました
             ```
-            回答は箇条書き1項目につき、日本語50-100文字にまとめること。
-            この回答はリリースノートでそのまま使用されます。
-            リリースノートの下に、この PullRequest の変更点についての短いお祝いのポエムを追加してください。
-            このポエムを引用（ `>` ）として追加してください。ポエムには絵文字を使用できる
+            回答は50-100語以内にしてください。この回答はそのままリリースノートに使用されるので、追加のコメントは避けてください。
+
+            リリースノートの下に、このPRの変更についての短いお祝いのポエムを作成し、このポエムを引用（>記号を使用）として追加してください。
+            ポエムの中で関連する場所に絵文字を使用することができます。
