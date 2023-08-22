@@ -1,4 +1,5 @@
-name: pr_then_openai_pr_reviewer # 環境に応じて変更して
+# 参考: https://zenn.dev/tadyjp/scraps/a7510f838edf8c
+name: pr_then_openai_pr_reviewer
 
 permissions:
   contents: read
@@ -20,13 +21,13 @@ jobs:
       - uses: coderabbitai/openai-pr-reviewer@9ac127d9e21d898c665f3a7cf12229e5908149d5 # https://github.com/coderabbitai/openai-pr-reviewer/releases/tag/0.60.0 # 好きに変更して
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_PR_REVIEWER_OPENAI_API_KEY }} # 環境に応じて変更して
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
           debug: false
           review_simple_changes: false
           review_comment_lgtm: false
-          openai_light_model: gpt-3.5-turbo-0613 # 好きに変更して
-          openai_heavy_model: gpt-3.5-turbo-0613 # 好きに変更して。本家曰く、gpt-4 推奨（ただし、値段に注意）
+          openai_light_model: gpt-3.5-turbo-0613
+          openai_heavy_model: gpt-3.5-turbo-0613
           
           # 以下のプロンプトは https://github.com/coderabbitai/openai-pr-reviewer/blob/main/action.yml から取ってくる。最後の `IMPORTANT` 部分を追加する。
           system_message: |
