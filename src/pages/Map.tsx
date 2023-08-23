@@ -7,6 +7,8 @@ import Map, { Layer, Source } from 'react-map-gl';
 
 // import { AuthContext } from '../contexts/AuthContexts';
 
+import { Loading } from '../components/Loading';
+
 const AppMap = () => {
   const [geojson, setGeojson] = useState<FeatureCollection>({
     type: 'FeatureCollection',
@@ -94,7 +96,9 @@ const AppMap = () => {
             </Source>
           </Map>
         ) : (
-          <div>地図を読み込んでいます</div>
+          <div>
+            <Loading />
+          </div>
         )}
       </header>
     </div>
