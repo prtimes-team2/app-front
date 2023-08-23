@@ -14,24 +14,23 @@ export const Router = () => {
     <BrowserRouter>
       <Suspense fallback={<Loading />}>
         <AuthProvider>
-        <Routes>
-          <Route
-            path="/app"
-            element={
-              <>
-                <Outlet />
-                <Navber />
-              </>
-            }
-          >
-            <Route element={<Top />} />
-             <Route path="/home" element={<Home />} />
-            <Route path="*" element={<Error />} />
-          </Route>
-        </Routes>
-          </AuthProvider>
+          <Routes>
+            <Route
+              path="/app"
+              element={
+                <>
+                  <Outlet />
+                  <Navber />
+                </>
+              }
+            >
+              <Route element={<Top />} />
+              <Route path="/app/home" element={<Home />} />
+              <Route path="*" element={<Error />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
       </Suspense>
-        
     </BrowserRouter>
   );
 };
