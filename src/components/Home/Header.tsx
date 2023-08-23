@@ -80,6 +80,8 @@ export const Header = () => {
               image="https://source.unsplash.com/random"
               title={report.title}
               detail={report.content}
+              // 一旦50%の確率でtrueにする
+              isFavorite={Math.random() < 0.5}
             />
           ))}
         </Container>
