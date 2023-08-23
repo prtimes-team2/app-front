@@ -39,7 +39,7 @@ function a11yProps(index: number) {
 }
 
 export const Header = () => {
-  const { reports } = useContext(AuthContext);
+  const { reports, questions } = useContext(AuthContext);
   const [value, setValue] = React.useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -85,7 +85,17 @@ export const Header = () => {
         </Container>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        新着質問画面
+        {/* questionsを.mapしてMainCardに入れる */}
+        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+          {questions.map((question) => (
+            <MainCard
+              key={question.id}
+              image="https://source.unsplash.com/random"
+              title={question.content}
+              detail={question.city}
+            />
+          ))}
+        </Container>
       </CustomTabPanel>
     </>
   );
