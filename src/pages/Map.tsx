@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { FeatureCollection } from 'geojson';
 import type { CircleLayer } from 'react-map-gl';
 import Map, { Layer, Source } from 'react-map-gl';
+import { AddFab } from '../components/common/AddFab';
 
 // import { AuthContext } from '../contexts/AuthContexts';
 
@@ -101,6 +102,7 @@ const AppMap = () => {
           </div>
         )}
       </header>
+      <AddFab />
     </div>
   );
 };
