@@ -12,8 +12,8 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.40",
-    "@types/react": "^18.2.20",
+    "@types/node": "^16.18.43",
+    "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -26,7 +26,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint:prettier": "prettier --check .",
+    "fix:prettier": "prettier --write .",
+    "lint:eslint": "eslint --ext .js,.jsx,.ts,.tsx src --ignore-path .gitignore .",
+    "fix:eslint": "npm run lint:eslint --fix",
+    "lint": "npm run lint:prettier && npm run lint:eslint",
+    "fix": "npm run fix:prettier && npm run fix:eslint"
   },
   "eslintConfig": {
     "extends": [
@@ -47,6 +53,10 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^8.47.0"
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "eslint": "^8.47.0",
+    "eslint-plugin-react": "^7.33.2",
+    "prettier": "^3.0.2"
   }
 }
