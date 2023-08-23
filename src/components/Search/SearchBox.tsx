@@ -6,8 +6,8 @@ import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 
-import { AuthContext } from '../../contexts/AuthContexts';
 import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../contexts/AuthContexts';
 
 import { Typography } from '@mui/material';
 
