@@ -4,7 +4,6 @@ import { AuthContext } from '../contexts/AuthContexts';
 const AppHome = () => {
   const { profile, isLogIn } = useContext(AuthContext);
 
-  //   const [count, setCount] = useState(0);
   return (
     <div className="App">
       <header className="App-header">
