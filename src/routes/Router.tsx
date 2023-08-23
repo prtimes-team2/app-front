@@ -8,6 +8,7 @@ import { Navber } from '../components/Navber';
 const Error = lazy(() => import('../pages/Error'));
 const Home = lazy(() => import('../pages/Home'));
 const Map = lazy(() => import('../pages/Map'));
+const User = lazy(() => import('../pages/User'));
 
 export const Router = () => {
   return (
@@ -26,6 +27,7 @@ export const Router = () => {
             >
               <Route path="/app/map" element={<Map />} />
               <Route path="/app/home" element={<Home />} />
+              <Route path="/app/user" element={<User />} />
               <Route path="*" element={<Error />} />
             </Route>
           </Routes>

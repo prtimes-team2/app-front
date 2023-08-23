@@ -1,6 +1,6 @@
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import React from 'react';
-import { Latest } from './Latest';
+import { TestCard } from '../common/TestCard';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -20,7 +20,7 @@ function CustomTabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 1, pt: 2 }}>
           <Box>{children}</Box>
         </Box>
       )}
@@ -68,7 +68,7 @@ export const Header = () => {
         </Box>
       </header>
       <CustomTabPanel value={value} index={0}>
-        <Latest />
+        <TestCard />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         新着質問画面
