@@ -6,6 +6,7 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
 import { useContext, useEffect, useState } from 'react';
+import CountUp from 'react-countup';
 import { AuthContext } from '../../contexts/AuthContexts';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -177,7 +178,7 @@ export const SearchBox = () => {
                 justifyContent: 'flex-start',
               }}
             >
-              {searchResultContent.length}件
+              <CountUp start={0} end={searchResultContent.length} />件
             </Container>
             <Container
               sx={{
