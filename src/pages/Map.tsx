@@ -1,10 +1,33 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useEffect, useState } from 'react';
 // import { useContext } from 'react';
-import Map from 'react-map-gl';
+import type { FeatureCollection } from 'geojson';
+import type { CircleLayer } from 'react-map-gl';
+import Map, { Layer, Source } from 'react-map-gl';
+
 // import { AuthContext } from '../contexts/AuthContexts';
 
 const AppMap = () => {
+  const [geojson, setGeojson] = useState<FeatureCollection>({
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [-122.4, 37.8] },
+        properties: {},
+      },
+    ],
+  });
+
+  const [layerStyle /* setLayerStyle */] = useState<CircleLayer>({
+    id: 'point',
+    type: 'circle',
+    paint: {
+      'circle-radius': 10,
+      'circle-color': '#007cbf',
+    },
+  });
+
   //   const { profile, isLogIn } = useContext(AuthContext);
 
   const mapToken = process.env.REACT_APP_MAPBOX_TOKEN;
@@ -36,6 +59,20 @@ const AppMap = () => {
           console.log(err);
       }
     );
+
+    setGeojson({
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [139.7426222, 35.6698195],
+          },
+          properties: {},
+        },
+      ],
+    });
   }, []);
 
   return (
@@ -51,7 +88,11 @@ const AppMap = () => {
             }}
             style={{ width: '100vw', height: 'calc(100vh - 56px)' }}
             mapStyle="mapbox://styles/mapbox/streets-v9"
-          />
+          >
+            <Source id="my-data" type="geojson" data={geojson}>
+              <Layer {...layerStyle} />
+            </Source>
+          </Map>
         ) : (
           <div>地図を読み込んでいます</div>
         )}
