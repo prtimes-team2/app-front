@@ -1,4 +1,6 @@
 export interface Report {
-  id: string;
-  // 後で追加
+  id: number;
+  address: string;
+  author: string;
+  content: string;
 }
