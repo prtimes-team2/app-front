@@ -111,6 +111,7 @@ export const AuthProvider = ({ children }: Props) => {
       };
 
       const res = await fetch(baseUrl + '/line', options);
+      console.log(res);
 
       setHomeTown({
         prefecture: '東京都',
