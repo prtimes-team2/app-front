@@ -3,4 +3,15 @@ export interface Report {
   address: string;
   author: string;
   content: string;
+  title: string;
+  lat: number;
+  lng: number;
+  tags: {
+    [key: string]: string;
+  };
+  imageUrls: {
+    [key: string]: string;
+  };
+  address: string;
+  author: string;
 }
