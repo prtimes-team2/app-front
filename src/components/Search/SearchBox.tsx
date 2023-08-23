@@ -2,18 +2,15 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import CssBaseline from '@mui/material/CssBaseline';
 import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
-import Paper from '@mui/material/Paper';
-
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContexts';
 
-import { Typography } from '@mui/material';
-
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { Report } from '../../types/report';
 import { SearchResult } from './SearchResult';
 
@@ -63,6 +60,8 @@ export const SearchBox = () => {
     setSearchResultContent(result);
   }, [reports]);
 
+  const tags = ['Food', 'Shop', 'view', 'その他'];
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -70,74 +69,136 @@ export const SearchBox = () => {
         <Container
           sx={{
             width: '100%',
-            height: '120px',
+            height: '145px',
             bgcolor: 'white',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
             justifyContent: 'center',
+            alignItems: 'start',
             marginBottom: '5px',
           }}
         >
           {/* 検索インプット */}
-          <Paper
+          <Container
             component="form"
             sx={{
+              marginTop: '5px',
               p: '2px 4px',
               display: 'flex',
               alignItems: 'center',
-              width: 400,
+              width: '100%',
+              height: '40px',
+              backgroundColor: '#EBEAEA',
+              borderRadius: '32px',
             }}
           >
             <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-              <SearchIcon />
+              <SearchIcon sx={{ color: '#000' }} />
             </IconButton>
             <FormControl>
               <InputBase
                 name="keyword"
-                sx={{ ml: 1, flex: 1 }}
+                sx={{
+                  ml: 1,
+                  flex: 1,
+                  color: '#000',
+                  textAlign: 'center',
+                  fontFamily: 'Inter',
+                  fontSize: '14px',
+                  fontStyle: 'normal',
+                  fontWeight: 600,
+                  lineHeight: '100%',
+                }}
                 onChange={(e) => setKeyword(e.target.value)}
                 value={keyword}
                 placeholder="スポットを検索"
                 inputProps={{ 'aria-label': 'search google maps' }}
               />
             </FormControl>
-          </Paper>
+          </Container>
           {/* フィルター */}
+          {/* ボタンを4つ並べる */}
+          <Grid
+            container
+            spacing={1}
+            sx={{
+              marginTop: '10px',
+            }}
+          >
+            {/* tagsを.map */}
+            {tags.map((tag) => (
+              <Grid item xs={3} key={tag}>
+                <Container
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: '90px',
+                    border: '1px solid #FFE792',
+                    backgroundColor: '#FFF',
+                    height: '30px',
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: '12px',
+                      fontFamily: 'Inter',
+                      fontWeight: 600,
+                      lineHeight: '100%',
+                    }}
+                  >
+                    {tag}
+                  </Typography>
+                </Container>
+              </Grid>
+            ))}
+          </Grid>
           {/* searchResultContentの配列の長さを表示する */}
           {/* 横向きのflexにする要素は左右に表示 */}
           <Container
             sx={{
+              marginTop: '15px',
               width: '100%',
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'space-between',
             }}
           >
-            <Typography
+            <Container
               sx={{
-                fontSize: '21px',
+                fontSize: '25px',
                 color: '#D9D9D9',
-                fontWeight: 'semiBold',
-                margin: '0px',
+                fontStyle: 'normal',
+                fontWeight: 600,
+                lineHeight: '1',
                 width: '30%',
+                fontFamily: 'Inter',
+                justifyContent: 'flex-start',
               }}
             >
               {searchResultContent.length}件
-            </Typography>
-
-            {/* 横一列に */}
+            </Container>
             <Container
               sx={{
+                width: '70%',
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
                 alignItems: 'center',
-                width: '70%',
+                justifyContent: 'flex-end',
               }}
             >
               <FilterAltIcon />
-              <p>詳しく絞りこみ</p>
+              <Typography
+                sx={{
+                  fontSize: '12px',
+                  fontFamily: 'Inter',
+                  fontWeight: 600,
+                  lineHeight: '100%',
+                }}
+              >
+                詳しく絞りこみ
+              </Typography>
             </Container>
           </Container>
         </Container>
