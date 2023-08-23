@@ -1,10 +1,13 @@
 import { FormControl } from '@mui/base';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContexts';
 
 import { useEffect, useState } from 'react';
 
@@ -25,6 +28,8 @@ import { Container } from '@mui/material';
 import { Report } from '../../types/report';
 import { SearchResult } from './SearchResult';
 export const SearchBox = () => {
+  const { reports } = useContext(AuthContext);
+
   // 検索キーワード
   const [keyword, setKeyword] = useState<string | null>(null);
   // 検索結果
@@ -39,7 +44,12 @@ export const SearchBox = () => {
     console.log(query, 'query');
     setKeyword(query);
     // todo - 検索のリクエスト
-    const result = [{ id: '1' }] as Report[];
+    const result = [] as Report[];
+
+    reports.forEach((report: Report) => {
+      result.push({ ...report });
+    });
+
     setSearchResultContent(result);
   }, []);
 

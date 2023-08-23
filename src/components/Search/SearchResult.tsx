@@ -11,8 +11,8 @@ export const SearchResult = (props: { result: Report[] }) => {
             <MainCard
               key={item.id}
               image="https://source.unsplash.com/random"
-              title={item.id}
-              detail="test"
+              title={item.author}
+              detail={item.content}
             />
           );
         })}
