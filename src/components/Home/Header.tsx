@@ -41,36 +41,38 @@ export const Header = () => {
     setValue(newValue);
   };
   return (
-    <header>
-      <Box position="sticky" top={0} bgcolor={'white'}>
-        <Typography
-          variant="h5"
-          sx={{
-            textAlign: 'center',
-            fontWeight: 'bold',
-            padding: '10px 0',
-          }}
-        >
-          じもとコイン
-        </Typography>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-            centered
+    <>
+      <header>
+        <Box position="sticky" top={0} bgcolor={'white'}>
+          <Typography
+            variant="h5"
+            sx={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+              padding: '10px 0',
+            }}
           >
-            <Tab label="最近の投稿" {...a11yProps(0)} />
-            <Tab label="新着質問" {...a11yProps(1)} />
-          </Tabs>
+            じもとコイン
+          </Typography>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+              centered
+            >
+              <Tab label="最近の投稿" {...a11yProps(0)} />
+              <Tab label="新着質問" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
         </Box>
-      </Box>
+      </header>
       <CustomTabPanel value={value} index={0}>
         <Latest />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         新着質問画面
       </CustomTabPanel>
-    </header>
+    </>
   );
 };
