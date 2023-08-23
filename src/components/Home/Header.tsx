@@ -49,7 +49,7 @@ export const Header = () => {
             sx={{
               textAlign: 'center',
               fontWeight: 'bold',
-              padding: '10px 0',
+              paddingTop: 2,
             }}
           >
             じもとコイン
