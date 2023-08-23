@@ -6,6 +6,8 @@ import type { CircleLayer } from 'react-map-gl';
 import Map, { Layer, Source } from 'react-map-gl';
 import { AddFab } from '../components/common/AddFab';
 
+import MapboxLanguage from '@mapbox/mapbox-gl-language';
+
 // import { AuthContext } from '../contexts/AuthContexts';
 
 import { Loading } from '../components/Loading';
@@ -78,6 +80,22 @@ const AppMap = () => {
     });
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  function onLoadMap(e) {
+    const map = e?.target;
+    if (map) {
+      // 言語設定
+      const language = new MapboxLanguage({
+        defaultLanguage: 'ja',
+      });
+      map.addControl(language);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      language._initialStyleUpdate();
+    }
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -90,7 +108,8 @@ const AppMap = () => {
               zoom: 14,
             }}
             style={{ width: '100vw', height: 'calc(100vh - 56px)' }}
-            mapStyle="mapbox://styles/mapbox/streets-v9"
+            mapStyle="mapbox://styles/mapbox/streets-v11"
+            onLoad={onLoadMap}
           >
             <Source id="my-data" type="geojson" data={geojson}>
               <Layer {...layerStyle} />
