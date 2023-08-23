@@ -1,32 +1,22 @@
-import { FormControl } from '@mui/base';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import CssBaseline from '@mui/material/CssBaseline';
+import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 
-import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContexts';
-
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { Typography } from '@mui/material';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const theme = createTheme({
-  palette: {
-    background: {
-      // 灰色
-      default: '#f5f5f5',
-    },
-  },
-});
-
 import { Container } from '@mui/material';
 import { Report } from '../../types/report';
 import { SearchResult } from './SearchResult';
+
 export const SearchBox = () => {
   const { reports } = useContext(AuthContext);
 
@@ -34,6 +24,15 @@ export const SearchBox = () => {
   const [keyword, setKeyword] = useState<string | null>(null);
   // 検索結果
   const [searchResultContent, setSearchResultContent] = useState<Report[]>([]);
+
+  const theme = createTheme({
+    palette: {
+      background: {
+        // 灰色
+        default: '#f5f5f5',
+      },
+    },
+  });
 
   useEffect(() => {
     // クエリの取得
@@ -46,12 +45,23 @@ export const SearchBox = () => {
     // todo - 検索のリクエスト
     const result = [] as Report[];
 
-    reports.forEach((report: Report) => {
-      result.push({ ...report });
-    });
+    // 一旦フロントで検索する
+    if (!query) {
+      result.push(...reports);
+    } else {
+      // 検索キーワードがreport.title or report.contentに含まれてたらresultに入れる
+      reports.forEach((report) => {
+        if (
+          report.title.includes(query as string) ||
+          report.content.includes(query as string)
+        ) {
+          result.push(report);
+        }
+      });
+    }
 
     setSearchResultContent(result);
-  }, []);
+  }, [reports]);
 
   return (
     <ThemeProvider theme={theme}>

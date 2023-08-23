@@ -93,6 +93,7 @@ export const AuthProvider = ({ children }: Props) => {
   };
 
   const getUser = async (idToken: string) => {
+    console.log('start getUser');
     try {
       // リクエストを行う
       // ユーザーが取得する
@@ -117,16 +118,40 @@ export const AuthProvider = ({ children }: Props) => {
       const userData = resData['User'] as User;
       setUser(userData);
 
+      // 地元が登録されているかどうかを確認
+      if (userData.prefecture == null || userData.city == null) {
+        setHasHomeTown(false);
+        console.log('地元が登録されていません');
+        // todo - Register画面に遷移させたい
+        return;
+      }
+
       const reports = resData['Reports'] as { [key: string]: Report };
+      if (!reports) {
+        throw new Error('reports is undefined');
+      }
       setReports(transformToArr(reports));
 
       const questions = resData['Questions'] as { [key: string]: Question };
+      if (!questions) {
+        throw new Error('questions is undefined');
+      }
       setQuestions(transformToArr(questions));
 
-      const favorites = resData['Favorite'] as { [key: string]: Favorite };
+      const favorites = resData['Favorites'] as { [key: string]: Favorite };
+      if (!favorites) {
+        console.log(resData, 'resData');
+        console.log(resData['Favorite'], 'Favorite');
+        throw new Error('favorites is undefined');
+      }
+
       setFavorites(transformToArr(favorites));
 
       const coinLogs = resData['CoinLogs'] as { [key: string]: CoinLog };
+      if (!coinLogs) {
+        throw new Error('coinLogs is undefined');
+      }
+
       setCoinLogs(transformToArr(coinLogs));
     } catch (err) {
       // APIのリクエストが失敗した時は、ログイン画面に戻す
