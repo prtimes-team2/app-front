@@ -1,9 +1,9 @@
 import { Container } from '@mui/material';
-import { MainCard } from '../common/MainCard';
+import { MainCard } from './MainCard';
 
-export const Latest = () => {
+export const TestCard = () => {
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
       <MainCard
         image="https://source.unsplash.com/random"
         title="Test"

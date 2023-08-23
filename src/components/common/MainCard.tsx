@@ -1,10 +1,10 @@
 import { Card, CardMedia, Box, CardContent, Typography } from '@mui/material';
 
-type propsType = {
+interface propsType {
   image: string;
   title: string;
   detail: string;
-};
+}
 
 export const MainCard = (props: propsType) => {
   return (
