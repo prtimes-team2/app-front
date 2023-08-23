@@ -39,7 +39,8 @@
     "lint:eslint": "eslint --ext .js,.jsx,.ts,.tsx src --ignore-path .gitignore .",
     "fix:eslint": "npm run lint:eslint --fix",
     "lint": "npm run lint:prettier && npm run lint:eslint",
-    "fix": "npm run fix:prettier && npm run fix:eslint"
+    "fix": "npm run fix:prettier && npm run fix:eslint",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -64,7 +65,8 @@
     "@typescript-eslint/parser": "^6.4.1",
     "eslint": "^8.47.0",
     "eslint-plugin-react": "^7.33.2",
-    "prettier": "^3.0.2"
+    "prettier": "^3.0.2",
+    "husky": "^8.0.0"
   },
   "husky": {
     "hooks": {
