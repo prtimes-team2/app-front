@@ -103,20 +103,26 @@ export const AuthProvider = ({ children }: Props) => {
 
       console.log(baseUrl, 'baseUrl');
 
+      // const idToken =
+      //   '';
+
       // ここでAPIにリクエストを行う
-      const options = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken: 'idToken' }),
+      // const options = {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ idToken }),
+      // };
+
+      // const res = await fetch(baseUrl + '/line', options);
+      // console.log(res);
+
+      const user = {
+        homeTown: {
+          prefecture: '東京都',
+          city: '渋谷区',
+        },
       };
-
-      const res = await fetch(baseUrl + '/line', options);
-      console.log(res);
-
-      setHomeTown({
-        prefecture: '東京都',
-        city: '渋谷区',
-      });
+      setHomeTown(user.homeTown);
     } catch (err) {
       // APIのリクエストが失敗した時は、ログイン画面に戻す
       console.log('getUser error');
