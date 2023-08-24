@@ -77,6 +77,7 @@ export const Content = ({ value }: ContentProps) => {
               address={question.address}
               title={question.content}
               detail={question.city}
+              isFavorite={favoriteIds.includes(question.id)}
             />
           ))}
         </Container>

@@ -21,6 +21,7 @@ class AuthContextProps {
   coinLogs: CoinLog[] = [];
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setProfile: (profile: Profile | null) => void = () => {};
+  setFavorite: (newValue: boolean, reportId: number) => void = () => {};
 }
 
 export const AuthContext = createContext<AuthContextProps>(
@@ -144,7 +145,6 @@ export const AuthProvider = ({ children }: Props) => {
         setHasHomeTown(false);
         console.log('地元が登録されていません');
         // register画面に遷移する
-
         navigate('/register');
         return;
       }
@@ -206,18 +206,6 @@ export const AuthProvider = ({ children }: Props) => {
       } else {
         setQuestions([]);
       }
-      // const favorites = resData['Favorites'] as { [key: string]: Favorite };
-      // console.log('---------------- favorites ------------');
-      // console.log(favorites);
-      // console.log('---------------- favorites ------------');
-
-      // // favoriteがある時は配列に変換してsetする
-      // // favoriteがない時は空の配列をsetする
-      // if (favorites) {
-      //   setFavorites(transformToArr(favorites));
-      // } else {
-      //   setFavorites([]);
-      // }
 
       const coinLogs = resData['CoinLogs'] as { [key: string]: CoinLog };
       console.log('---------------- coinLogs ------------');
@@ -236,6 +224,26 @@ export const AuthProvider = ({ children }: Props) => {
       console.log('getUser error');
       console.log(err);
     }
+  };
+
+  const setFavorite = async (newValue: boolean, reportId: number) => {
+    console.log('setFavorite');
+    console.log(newValue);
+    console.log(reportId);
+    // setFavoriteIdsを更新する
+    // newValueがtrueの時は、reportIdを追加する
+    // newValueがfalseの時は、reportIdを削除する
+    const newFavoriteIds = [...favoriteIds];
+    if (newValue) {
+      newFavoriteIds.push(reportId);
+    }
+    if (!newValue) {
+      const index = newFavoriteIds.indexOf(reportId);
+      if (index > -1) {
+        newFavoriteIds.splice(index, 1);
+      }
+    }
+    setFavoriteIds(newFavoriteIds);
   };
 
   function transformToArr<T>(data: { [key: string]: T }): Array<T> {
@@ -259,6 +267,7 @@ export const AuthProvider = ({ children }: Props) => {
         questions,
         favoriteIds,
         coinLogs,
+        setFavorite,
       }}
     >
       {children}

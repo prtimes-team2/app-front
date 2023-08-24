@@ -1,3 +1,4 @@
+import liff from '@line/liff';
 import PlaceIcon from '@mui/icons-material/Place';
 import {
   Box,
@@ -9,7 +10,9 @@ import {
   Typography,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import liff from '@line/liff';
+
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContexts';
 
 interface propsType {
   postKey: number;
@@ -17,7 +20,7 @@ interface propsType {
   title: string;
   detail: string;
   address: string;
-  isFavorite?: boolean;
+  isFavorite: boolean;
 }
 
 const FavoriteIconBk = () => {
@@ -62,12 +65,10 @@ const FavoriteIconRed = () => {
 };
 
 export const MainCard = (props: propsType) => {
+  const { setFavorite } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const setLiked = async () => {
-    console.log('liked!');
-    console.log(props.postKey, 'props.postKey');
-
+  const setLiked = async (newValue: boolean) => {
     // apiにpostする
     const baseUrl = process.env.REACT_APP_API_BASE_URL;
     if (!baseUrl) {
@@ -77,7 +78,7 @@ export const MainCard = (props: propsType) => {
 
     // APIにリクエスト
     const options = {
-      method: 'POST',
+      method: newValue ? 'POST' : 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         idToken: liff.getIDToken() ?? 'id_token',
@@ -88,6 +89,9 @@ export const MainCard = (props: propsType) => {
     const res = await fetch(baseUrl + '/favorite', options);
     const resData = await res.json();
     console.log(resData);
+
+    // いいねの状態を更新
+    setFavorite(newValue, props.postKey);
   };
 
   return (
@@ -167,7 +171,10 @@ export const MainCard = (props: propsType) => {
           margin={0.2}
           sx={{ marginLeft: 'auto', marginRight: '10px', marginTop: 'auto' }}
         >
-          <IconButton aria-label="add to favorites" onClick={setLiked}>
+          <IconButton
+            aria-label="add to favorites"
+            onClick={() => setLiked(!props.isFavorite)}
+          >
             {props.isFavorite ? <FavoriteIconBk /> : <FavoriteIconRed />}
           </IconButton>
         </Box>

@@ -1,8 +1,11 @@
 import { Container } from '@mui/material';
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContexts';
 import { Report } from '../../types/report';
 import { MainCard } from '../common/MainCard';
 
 export const SearchResult = (props: { result: Report[] }) => {
+  const { favoriteIds } = useContext(AuthContext);
   return (
     <div className="App">
       <Container maxWidth="sm">
@@ -15,6 +18,7 @@ export const SearchResult = (props: { result: Report[] }) => {
               title={item.author}
               address={item.address}
               detail={item.content}
+              isFavorite={favoriteIds.includes(item.id)}
             />
           );
         })}
