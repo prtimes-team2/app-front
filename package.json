@@ -9,6 +9,7 @@
     "@line/liff-mock": "^1.0.3",
     "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "@mapbox/mapbox-gl-language": "^1.0.1",
+    "@mui/base": "^5.0.0-beta.12",
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.5",
     "@mui/styled-engine-sc": "^5.12.0",
