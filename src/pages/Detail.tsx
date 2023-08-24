@@ -7,16 +7,47 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material';
-import { AuthContext } from '../contexts/AuthContexts';
 import { useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContexts';
 
 const Detail = () => {
+  const navigate = useNavigate();
   const pathname = useLocation().pathname;
   const reportId = Number(pathname.split('/')[3]);
   const { profile, reports } = useContext(AuthContext);
   const report = reports.find((report) => report.id === reportId);
   const postDay = report?.created_at.split('T')[0];
+
+  const handleDelete = async () => {
+    if (window.confirm('削除しますか？')) {
+      console.log(reportId);
+
+      // api
+      // APIにリクエスト
+
+      const baseUrl = process.env.REACT_APP_API_BASE_URL;
+      if (!baseUrl) {
+        console.log('baseUrl is undefined');
+        return;
+      }
+      const options = {
+        method: 'DELETE',
+      };
+
+      const requestUrl =
+        baseUrl + '/report' + `?idToken=id_token&reportId=${reportId}`;
+
+      console.log(requestUrl, 'requestUrl');
+
+      const res = await fetch(requestUrl, options);
+      const resData = await res.json();
+      console.log(resData);
+
+      // /app/homeに遷移する
+      navigate('/app/home');
+    }
+  };
   return (
     <>
       <Box padding={2} display={'flex'}>
@@ -35,9 +66,17 @@ const Detail = () => {
         >
           詳細
         </Typography>
-        <IconButton sx={{ marginLeft: 'auto' }}>
-          <Delete />
-        </IconButton>
+        {/* 削除ボタンは自分が投稿したものだけ表示される */}
+        {profile && report && profile.userId === report.user_id ? (
+          <IconButton
+            sx={{ marginLeft: 'auto' }}
+            onClick={() => handleDelete()}
+          >
+            <Delete />
+          </IconButton>
+        ) : (
+          <></>
+        )}
       </Box>
       <Box paddingLeft={5} paddingBottom={1} display={'flex'}>
         <Avatar
