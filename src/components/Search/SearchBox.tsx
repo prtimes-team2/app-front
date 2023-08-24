@@ -15,6 +15,11 @@ import { Container, Typography } from '@mui/material';
 import { Report } from '../../types/report';
 import { SearchResult } from './SearchResult';
 
+import {
+  getReleaseFromPref,
+  prTimesPrefecture,
+} from '../../lib/prtimesPrefecture';
+
 export const SearchBox = () => {
   const { reports } = useContext(AuthContext);
 
@@ -32,7 +37,7 @@ export const SearchBox = () => {
     },
   });
 
-  useEffect(() => {
+  const getData = async () => {
     // クエリの取得
     // 開いているページのURLを取得
     const url = new URL(window.location.href);
@@ -57,8 +62,42 @@ export const SearchBox = () => {
         }
       });
     }
+    // 検索に利用する都道府県を決める
+    const name = '静岡県';
+    // prtimesPrefectureからprefectureのidを取得
+    const foundPrefecture = prTimesPrefecture.find(
+      (prefecture) => prefecture.name === name
+    );
+    const searchPrefectureId = foundPrefecture ? foundPrefecture.id : 12;
 
+    const pressArray = await getReleaseFromPref(searchPrefectureId);
+
+    // resultの中にpressArrayの要素をランダムな順番で入れる
+    pressArray.forEach((press) => {
+      const randomIndex = Math.floor(Math.random() * result.length);
+      // pressの値を使ってreport型に変換していく
+      result.splice(randomIndex, 0, {
+        id: press.release_id,
+        address: '',
+        //会社名
+        author: press.company_name,
+        // subtitle
+        content: press.subtitle,
+        // タイトル
+        title: press.title,
+        lat: 0,
+        lng: 0,
+        tags: {},
+        imageUrls: {},
+      });
+    });
+
+    // idを使ってその都道府県の投稿を取得する
     setSearchResultContent(result);
+  };
+
+  useEffect(() => {
+    getData();
   }, [reports]);
 
   const tags = ['Food', 'Shop', 'view', 'その他'];
