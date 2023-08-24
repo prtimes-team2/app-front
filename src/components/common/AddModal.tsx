@@ -10,7 +10,8 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useReward } from 'react-rewards';
 import { AuthContext } from '../../contexts/AuthContexts';
 import { Place } from '../AddModal/Place';
 import { Question } from '../AddModal/Question';
@@ -32,7 +33,24 @@ const style = {
   p: 4,
 };
 
+const useInterval = (callback: () => void) => {
+  const callbackRef = useRef(() => {});
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    const timerId = setInterval(() => callbackRef.current(), 1000);
+    return () => clearInterval(timerId);
+  }, []);
+};
+
 export const AddModal = (prop: Props) => {
+  const { reward, isAnimating } = useReward('rewardId', 'confetti', {
+    elementSize: 20,
+  });
+
   const [age, setAge] = useState('place');
   const [amount, setAmount] = useState(0);
   const [isResult, setIsResult] = useState(false);
@@ -41,9 +59,17 @@ export const AddModal = (prop: Props) => {
     setAge(event.target.value);
   };
   const { profile } = useContext(AuthContext);
+
+  useInterval(() => {
+    if (!isAnimating && isResult) {
+      reward();
+    }
+  });
+
   return (
     <Modal open={prop.open} onClose={prop.handleClose}>
       <Stack>
+        <span id="rewardId" style={{ width: '100%', height: '300' }} />
         {isResult ? (
           <Box sx={style}>
             <Typography variant="h5" component="h2">
@@ -112,11 +138,12 @@ export const AddModal = (prop: Props) => {
                       //setIsResult(true)を入れて2秒後にsetIsResult(false)と画面を閉じる
                       setIsResult(value);
                       setAmount(amount);
+                      reward();
                       setTimeout(() => {
                         setIsResult(false);
                         setAmount(0);
                         prop.handleClose();
-                      }, 2000);
+                      }, 5000);
                     }}
                   />
                 ) : age === 'question' ? (
