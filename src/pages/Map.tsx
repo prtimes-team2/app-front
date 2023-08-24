@@ -21,33 +21,28 @@ const AppMap = () => {
   const map = useRef(null);
   const geoControlRef = useRef();
 
-  useEffect(() => {
-    // Activate as soon as the control is loaded
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    geoControlRef.current?.trigger();
-  }, [geoControlRef.current]);
-
   const mapToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
   if (!mapToken) {
     throw new Error('Mapbox Token is not defined');
   }
-
   // 現在地の取得
   const [viewport, setViewport] = useState({
-    latitude: 0,
-    longitude: 0,
+    latitude: 35.681236,
+    longitude: 139.767125,
   });
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
-      (pos) =>
+      (pos) => {
+        console.log(pos);
         setViewport({
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude,
-        }),
+        });
+      },
       (err) => {
+        console.log(err);
         // 現在地が取れない時は東京駅の緯度軽度を入れる
         setViewport({
           latitude: 35.681236,
@@ -57,6 +52,13 @@ const AppMap = () => {
       }
     );
   }, []);
+
+  useEffect(() => {
+    // Activate as soon as the control is loaded
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    geoControlRef.current?.trigger();
+  }, [geoControlRef.current]);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
