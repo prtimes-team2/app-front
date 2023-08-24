@@ -54,11 +54,7 @@ const Profile = () => {
   };
   const [totalCoin, setTotalCoin] = React.useState(0);
 
-  const { profile, coinLogs, reports, favorites } = useContext(AuthContext);
-
-  const favoriteIds = favorites
-    .filter((favorite) => favorite.isFavorite === true)
-    .map((favorite) => favorite.reportId);
+  const { profile, coinLogs, reports, favoriteIds } = useContext(AuthContext);
 
   useEffect(() => {
     let total = 0;
@@ -128,7 +124,6 @@ const Profile = () => {
         {/* 自分の投稿が表示される */}
         <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
           {reports
-            // todo - バックエンドの対応次第でuser_idかuserIdにする
             .filter((report) => report.user_id === profile?.userId)
             .map((report) => (
               <MainCard
@@ -138,8 +133,7 @@ const Profile = () => {
                 title={report.title}
                 detail={report.content}
                 address={report.address}
-                // 一旦50%の確率でtrueにする
-                isFavorite={Math.random() < 0.5}
+                isFavorite={favoriteIds.includes(report.id)}
               />
             ))}
         </Container>

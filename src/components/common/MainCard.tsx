@@ -1,3 +1,4 @@
+import PlaceIcon from '@mui/icons-material/Place';
 import {
   Box,
   Card,
@@ -7,8 +8,8 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import PlaceIcon from '@mui/icons-material/Place';
 import { useNavigate } from 'react-router-dom';
+import liff from '@line/liff';
 
 interface propsType {
   postKey: number;
@@ -62,6 +63,33 @@ const FavoriteIconRed = () => {
 
 export const MainCard = (props: propsType) => {
   const navigate = useNavigate();
+
+  const setLiked = async () => {
+    console.log('liked!');
+    console.log(props.postKey, 'props.postKey');
+
+    // apiにpostする
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+    if (!baseUrl) {
+      console.log('baseUrl is undefined');
+      return;
+    }
+
+    // APIにリクエスト
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idToken: liff.getIDToken() ?? 'id_token',
+        reportId: props.postKey,
+      }),
+    };
+
+    const res = await fetch(baseUrl + '/favorite', options);
+    const resData = await res.json();
+    console.log(resData);
+  };
+
   return (
     <Box marginBottom={1}>
       <Card
@@ -139,12 +167,7 @@ export const MainCard = (props: propsType) => {
           margin={0.2}
           sx={{ marginLeft: 'auto', marginRight: '10px', marginTop: 'auto' }}
         >
-          <IconButton
-            aria-label="add to favorites"
-            onClick={() => {
-              console.log('liked!');
-            }}
-          >
+          <IconButton aria-label="add to favorites" onClick={setLiked}>
             {props.isFavorite ? <FavoriteIconBk /> : <FavoriteIconRed />}
           </IconButton>
         </Box>

@@ -5,7 +5,6 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CoinLog } from '../types/coinLog';
-import { Favorite } from '../types/favorite';
 import { Question } from '../types/questions';
 import { Report } from '../types/report';
 import { User } from '../types/user';
@@ -18,7 +17,7 @@ class AuthContextProps {
   user: User | null = null;
   reports: Report[] = [];
   questions: Question[] = [];
-  favorites: Favorite[] = [];
+  favoriteIds: number[] = [];
   coinLogs: CoinLog[] = [];
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setProfile: (profile: Profile | null) => void = () => {};
@@ -39,7 +38,7 @@ export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(() => null);
   const [reports, setReports] = useState<Report[]>(() => []);
   const [questions, setQuestions] = useState<Question[]>(() => []);
-  const [favorites, setFavorites] = useState<Favorite[]>(() => []);
+  const [favoriteIds, setFavoriteIds] = useState<number[]>(() => []);
   const [coinLogs, setCoinLogs] = useState<CoinLog[]>(() => []);
   const navigate = useNavigate();
 
@@ -179,6 +178,15 @@ export const AuthProvider = ({ children }: Props) => {
         setReports([]);
       }
 
+      // favotiteしている配列を作成する
+      const favIds: number[] = [];
+      if (FavoriteReports) {
+        for (const report of FavoriteReports) {
+          favIds.push(report.id);
+        }
+      }
+      setFavoriteIds(favIds);
+
       const questions = resData['Questions'] as { [key: string]: Question };
       console.log('---------------- questions ------------');
       console.log(questions);
@@ -191,18 +199,18 @@ export const AuthProvider = ({ children }: Props) => {
       } else {
         setQuestions([]);
       }
-      const favorites = resData['Favorites'] as { [key: string]: Favorite };
-      console.log('---------------- favorites ------------');
-      console.log(favorites);
-      console.log('---------------- favorites ------------');
+      // const favorites = resData['Favorites'] as { [key: string]: Favorite };
+      // console.log('---------------- favorites ------------');
+      // console.log(favorites);
+      // console.log('---------------- favorites ------------');
 
-      // favoriteがある時は配列に変換してsetする
-      // favoriteがない時は空の配列をsetする
-      if (favorites) {
-        setFavorites(transformToArr(favorites));
-      } else {
-        setFavorites([]);
-      }
+      // // favoriteがある時は配列に変換してsetする
+      // // favoriteがない時は空の配列をsetする
+      // if (favorites) {
+      //   setFavorites(transformToArr(favorites));
+      // } else {
+      //   setFavorites([]);
+      // }
 
       const coinLogs = resData['CoinLogs'] as { [key: string]: CoinLog };
       console.log('---------------- coinLogs ------------');
@@ -216,8 +224,6 @@ export const AuthProvider = ({ children }: Props) => {
       } else {
         setCoinLogs([]);
       }
-
-      // todo - favoriteに使うreportとユーザーが投稿したreportを別で格納したった言ってた気がするのでつなげる
     } catch (err) {
       // APIのリクエストが失敗した時は、ログイン画面に戻す
       console.log('getUser error');
@@ -244,7 +250,7 @@ export const AuthProvider = ({ children }: Props) => {
         user,
         reports,
         questions,
-        favorites,
+        favoriteIds,
         coinLogs,
       }}
     >

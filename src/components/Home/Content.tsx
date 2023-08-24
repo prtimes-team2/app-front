@@ -1,9 +1,10 @@
-import * as React from 'react';
 import { Box, Container } from '@mui/material';
+import * as React from 'react';
 
-import { MainCard } from '../common/MainCard';
 import { Filter } from '../common/Filter';
+import { MainCard } from '../common/MainCard';
 
+import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContexts';
 
 interface TabPanelProps {
@@ -37,8 +38,9 @@ type ContentProps = {
 };
 
 export const Content = ({ value }: ContentProps) => {
+  const { favoriteIds } = useContext(AuthContext);
+
   const [address, setAddress] = React.useState('');
-  console.log(address);
 
   React.useEffect(() => {}, [address]);
 
@@ -59,8 +61,7 @@ export const Content = ({ value }: ContentProps) => {
               title={report.title}
               detail={report.content}
               address={report.address}
-              // 一旦50%の確率でtrueにする
-              isFavorite={Math.random() < 0.5}
+              isFavorite={favoriteIds.includes(report.id)}
             />
           ))}
         </Container>
