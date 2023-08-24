@@ -3,5 +3,6 @@ export interface Question {
   city: string;
   content: string;
   id: number;
+  address: string;
   prefecture: string;
 }

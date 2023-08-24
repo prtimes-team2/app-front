@@ -31,7 +31,7 @@ export const Router = () => {
             >
               <Route path="/app/map" element={<Map />} />
               <Route path="/app/home" element={<Home />} />
-              <Route path="/app/home/detail/:id" element={<Detail />} />
+              <Route path="/app/detail/:id" element={<Detail />} />
               <Route path="/app/search" element={<Search />} />
               <Route path="/app/user" element={<User />} />
               <Route path="/app/coinlog" element={<CoinLog />} />

@@ -10,8 +10,10 @@ export const SearchResult = (props: { result: Report[] }) => {
           return (
             <MainCard
               key={item.id}
+              postKey={item.id}
               image="https://source.unsplash.com/random"
               title={item.author}
+              address={item.address}
               detail={item.content}
             />
           );
