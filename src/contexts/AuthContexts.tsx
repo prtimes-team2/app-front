@@ -69,6 +69,18 @@ export const AuthProvider = ({ children }: Props) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         await liff.init({ liffId, mock: true });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        liff.$mock.set((p) => ({
+          ...p,
+          getProfile: {
+            displayName: 'Brown',
+            userId: '123456789',
+            statusMessage: 'hello',
+            pictureUrl:
+              'https://firebasestorage.googleapis.com/v0/b/prtimes-team-2.appspot.com/o/images%2Ftest%2Fchar_brown.85af1dc9.png?alt=media&token=327fae2e-c37f-4df8-885b-31649b977e88',
+          },
+        }));
         liff.login();
         setProfile(await liff.getProfile());
         await getUser('id_token');
