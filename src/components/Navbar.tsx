@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -19,6 +20,10 @@ export const Navbar = () => {
   const navigate = useNavigate();
 
   const [selectedTab, setSelectedTab] = React.useState('/app/home'); // デフォルトのタブ
+
+  useEffect(() => {
+    setSelectedTab(location.pathname); // パスの変更を検出して、selectedTabを更新
+  }, [location.pathname]);
 
   const handleTabChange = (route: string) => {
     navigate(route);
