@@ -3,7 +3,7 @@ import { AddFab } from '../components/common/AddFab';
 
 const AppHome = () => {
   return (
-    <div className="App">
+    <div className="App" style={{ paddingBottom: '56px' }}>
       <Header />
       <AddFab />
     </div>

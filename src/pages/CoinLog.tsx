@@ -27,7 +27,7 @@ const AppCoinLog = () => {
   const groupedData = groupByDate(coinLogs);
 
   return (
-    <div className="App">
+    <div className="App" style={{ paddingBottom: '56px' }}>
       <Box padding={2} display={'flex'}>
         <IconButton
           sx={{ marginRight: 1 }}

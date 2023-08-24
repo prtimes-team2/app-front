@@ -68,7 +68,7 @@ export const Content = ({ value }: ContentProps) => {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         {/* questionsを.mapしてMainCardに入れる */}
-        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+        <Container maxWidth="sm">
           {questions.map((question) => (
             <MainCard
               key={question.id}

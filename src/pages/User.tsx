@@ -124,7 +124,7 @@ const Profile = () => {
       </header>
       <CustomTabPanel value={value} index={0}>
         {/* 自分の投稿が表示される */}
-        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+        <Container maxWidth="sm" sx={{ paddingBottom: '56px' }}>
           {reports
             .filter((report) => report.user_id === profile?.userId)
             .map((report) => (
