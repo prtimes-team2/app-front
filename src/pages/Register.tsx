@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import { Confilm } from '../components/Register/Confilm';
 
@@ -20,11 +21,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { japan } from '../lib/japan';
+import { getCity } from '../lib/getAddress';
 import { jenderArr } from '../lib/jender';
 
 export default function SignUp() {
-  const [prefecture, setPrefecture] = React.useState<number>(13);
-  const [city, setCity] = React.useState(1);
+  const [prefecture, setPrefecture] = React.useState<string>('');
+  const [city, setCity] = React.useState('');
   const [birthday, setBirthDay] = React.useState<Date | null>(null);
   const [jender, setJender] = React.useState(0);
   const [open, setOpen] = React.useState(false);
@@ -37,15 +39,20 @@ export default function SignUp() {
     );
   });
 
-  const citiesArr = japan[Number(prefecture - 1)].city;
+  const citiesArr = useQuery(['cities', prefecture], () => getCity(prefecture));
 
-  const cityLs = citiesArr.map((value) => {
-    return (
-      <MenuItem key={value.id} value={value.id}>
-        {value.name}
-      </MenuItem>
-    );
-  });
+  let cityLs;
+  if (citiesArr && citiesArr.data && citiesArr.data.data) {
+    cityLs = citiesArr.data.data.map((value: { id: string; name: string }) => {
+      return (
+        <MenuItem key={value.id} value={value.id}>
+          {value.name}
+        </MenuItem>
+      );
+    });
+  }
+
+  console.log(cityLs);
 
   const jenderLs = jenderArr.map((obj) => {
     return (
@@ -81,7 +88,7 @@ export default function SignUp() {
                 value={prefecture}
                 label="都道府県"
                 onChange={({ target }) => {
-                  setPrefecture(Number(target.value));
+                  setPrefecture(target.value);
                 }}
               >
                 {prefectureLs}
@@ -94,7 +101,7 @@ export default function SignUp() {
                 value={city}
                 label="市区町村"
                 onChange={({ target }) => {
-                  setCity(Number(target.value));
+                  setCity(target.value);
                 }}
               >
                 {cityLs}
