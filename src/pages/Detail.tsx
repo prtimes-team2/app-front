@@ -1,10 +1,20 @@
 import { Close, Delete, LocationOn } from '@mui/icons-material';
-import { Avatar, Box, IconButton, Paper, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Paper,
+  Skeleton,
+  Typography,
+} from '@mui/material';
 import { AuthContext } from '../contexts/AuthContexts';
 import { useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const Detail = () => {
-  const { profile } = useContext(AuthContext);
+  const pathname = useLocation().pathname;
+  const reportId = Number(pathname.split('/')[3]);
+  const { profile, reports } = useContext(AuthContext);
   return (
     <>
       <Box padding={2} display={'flex'}>
@@ -33,14 +43,22 @@ const Detail = () => {
           src={profile && profile.pictureUrl ? profile.pictureUrl : ''}
           sx={{ width: 28, height: 28, marginRight: 1 }}
         />
-        <Typography
-          variant="subtitle1"
-          component="div"
-          display={'flex'}
-          alignItems={'center'}
-        >
-          {profile ? profile.displayName : 'no profile'}
-        </Typography>
+        <Box sx={{ width: '100%' }}>
+          {reports[reportId] ? (
+            <Typography
+              variant="subtitle1"
+              component="div"
+              display={'flex'}
+              alignItems={'center'}
+            >
+              {profile ? profile.displayName : 'no profile'}
+            </Typography>
+          ) : (
+            <Skeleton width="10vh" animation="wave">
+              <Typography>.</Typography>
+            </Skeleton>
+          )}
+        </Box>
       </Box>
       <Box
         display="flex"
@@ -50,15 +68,22 @@ const Detail = () => {
         paddingBottom={1}
       >
         <Box>
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            mt={1}
-            textAlign={'center'}
-          >
-            {/* TODO: タイトル */}
-            琵琶湖の眺め
-          </Typography>
+          <Box sx={{ width: '100%' }}>
+            {reports[reportId] ? (
+              <Typography
+                variant="h6"
+                fontWeight="bold"
+                mt={1}
+                textAlign={'center'}
+              >
+                {reports[reportId].title}
+              </Typography>
+            ) : (
+              <Skeleton width="10vh" animation="wave">
+                <Typography>.</Typography>
+              </Skeleton>
+            )}
+          </Box>
         </Box>
       </Box>
       <Box display="flex" justifyContent="center">
@@ -78,21 +103,36 @@ const Detail = () => {
         paddingTop={0.2}
       >
         <Box>
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-            textAlign={'center'}
-          >
-            {/* TODO: サブタイトル */}
-            ここから見える景色は地元民のみぞ知る
-          </Typography>
+          <Box sx={{ width: '100%' }}>
+            {reports[reportId] ? (
+              <Typography
+                variant="subtitle1"
+                fontWeight="bold"
+                textAlign={'center'}
+              >
+                {reports[reportId].content}
+              </Typography>
+            ) : (
+              <Skeleton width="10vh" animation="wave">
+                <Typography>.</Typography>
+              </Skeleton>
+            )}
+          </Box>
         </Box>
       </Box>
       <Box paddingTop={2} paddingLeft={5} display={'flex'}>
         <LocationOn sx={{ marginRight: 1 }} />
-        <Typography variant="body2" display={'flex'} alignItems={'center'}>
-          滋賀県大津市
-        </Typography>
+        <Box sx={{ width: '100%' }}>
+          {reports[reportId] ? (
+            <Typography variant="body2" display={'flex'} alignItems={'center'}>
+              {reports[reportId].address}
+            </Typography>
+          ) : (
+            <Skeleton width="10vh" animation="wave">
+              <Typography>.</Typography>
+            </Skeleton>
+          )}
+        </Box>
       </Box>
       <Box
         paddingTop={1}

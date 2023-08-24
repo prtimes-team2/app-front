@@ -1,15 +1,21 @@
 import {
   Box,
   Card,
+  CardActionArea,
   CardContent,
   CardMedia,
   IconButton,
   Typography,
 } from '@mui/material';
+import PlaceIcon from '@mui/icons-material/Place';
+import { useNavigate } from 'react-router-dom';
+
 interface propsType {
+  postKey: number;
   image: string;
   title: string;
   detail: string;
+  address: string;
   isFavorite?: boolean;
 }
 
@@ -55,52 +61,92 @@ const FavoriteIconRed = () => {
 };
 
 export const MainCard = (props: propsType) => {
+  const navigate = useNavigate();
   return (
     <Box marginBottom={1}>
-      <Card sx={{ display: 'flex' }}>
-        <CardMedia
-          image={props.image}
-          title="画像"
-          sx={{
-            height: 75,
-            width: 75,
-            minWidth: 75,
-            objectFit: 'cover',
-            padding: 2,
+      <Card
+        sx={{
+          display: 'flex',
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+        }}
+      >
+        <CardActionArea
+          sx={{ flex: '1', display: 'flex' }}
+          onClick={() => {
+            navigate(`/app/detail/${props.postKey}`);
           }}
-        />
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <CardContent sx={{ flex: '1 0 auto' }}>
-            <Typography
-              component="div"
-              variant="h6"
-              sx={{
-                width: '164px',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-              }}
-            >
-              {props.title}
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              color="text.secondary"
-              component="div"
-              sx={{
-                width: '164px',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-              }}
-            >
-              {props.detail}
-            </Typography>
-            {/* ハートアイコン */}
-            <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-end' }}>
-              <IconButton aria-label="add to favorites">
-                {props.isFavorite ? <FavoriteIconBk /> : <FavoriteIconRed />}
-              </IconButton>
-            </Box>
-          </CardContent>
+        >
+          <CardMedia
+            image={props.image}
+            title="画像"
+            sx={{
+              height: 75,
+              width: 75,
+              minWidth: 75,
+              objectFit: 'cover',
+              padding: 2,
+            }}
+          />
+          <Box sx={{ flex: '1' }} position={'relative'} overflow={'hidden'}>
+            <CardContent>
+              <Typography
+                component="div"
+                variant="h6"
+                sx={{
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                }}
+              >
+                {props.title}
+              </Typography>
+              <Typography
+                noWrap={true}
+                component="div"
+                width={'100%'}
+                sx={{
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                }}
+              >
+                {props.detail}
+              </Typography>
+              {/* ハートアイコン */}
+            </CardContent>
+          </Box>
+        </CardActionArea>
+      </Card>
+      <Card
+        sx={{
+          display: 'flex',
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+        }}
+      >
+        <Box display={'flex'} alignItems={'center'}>
+          <PlaceIcon />
+        </Box>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          display={'flex'}
+          alignItems={'center'}
+        >
+          {props.address}
+        </Typography>
+        <Box
+          margin={0.2}
+          sx={{ marginLeft: 'auto', marginRight: '10px', marginTop: 'auto' }}
+        >
+          <IconButton
+            aria-label="add to favorites"
+            onClick={() => {
+              console.log('liked!');
+            }}
+          >
+            {props.isFavorite ? <FavoriteIconBk /> : <FavoriteIconRed />}
+          </IconButton>
         </Box>
       </Card>
     </Box>

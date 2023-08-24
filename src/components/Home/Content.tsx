@@ -45,9 +45,11 @@ export const Content = ({ value }: ContentProps) => {
           {reports.map((report) => (
             <MainCard
               key={report.id}
+              postKey={report.id}
               image="https://source.unsplash.com/random"
               title={report.title}
               detail={report.content}
+              address={report.address}
               // 一旦50%の確率でtrueにする
               isFavorite={Math.random() < 0.5}
             />
@@ -60,7 +62,9 @@ export const Content = ({ value }: ContentProps) => {
           {questions.map((question) => (
             <MainCard
               key={question.id}
+              postKey={question.id}
               image="https://source.unsplash.com/random"
+              address={question.address}
               title={question.content}
               detail={question.city}
             />
