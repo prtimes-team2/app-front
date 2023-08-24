@@ -54,7 +54,8 @@ const Profile = () => {
   };
   const [totalCoin, setTotalCoin] = React.useState(0);
 
-  const { profile, coinLogs, reports, favoriteIds } = useContext(AuthContext);
+  const { profile, coinLogs, reports, favoriteIds, selfQuestions } =
+    useContext(AuthContext);
 
   useEffect(() => {
     let total = 0;
@@ -115,7 +116,8 @@ const Profile = () => {
               centered
             >
               <Tab label="投稿" {...a11yProps(0)} />
-              <Tab label="お気に入り" {...a11yProps(1)} />
+              <Tab label="質問" {...a11yProps(1)} />
+              <Tab label="お気に入り" {...a11yProps(2)} />
             </Tabs>
           </Box>
         </Box>
@@ -139,6 +141,14 @@ const Profile = () => {
         </Container>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
+        {/* 自分の投稿した質問を表示したい */}
+        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+          {selfQuestions.map((selfQuestion) => (
+            <div key={selfQuestion.question_id}>私の質問</div>
+          ))}
+        </Container>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
         {/* お気に入りの投稿が表示される reportにあって、favoritesのidのものだけを表示したい */}
         <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
           {reports
