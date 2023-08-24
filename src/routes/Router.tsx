@@ -3,7 +3,7 @@ import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { Loading } from '../components/Loading';
 import { AuthProvider } from '../contexts/AuthContexts';
 
-import { Navber } from '../components/Navber';
+import { Navbar } from '../components/Navbar';
 
 const Error = lazy(() => import('../pages/Error'));
 const Home = lazy(() => import('../pages/Home'));
@@ -25,7 +25,7 @@ export const Router = () => {
               element={
                 <>
                   <Outlet />
-                  <Navber />
+                  <Navbar />
                 </>
               }
             >
