@@ -75,6 +75,7 @@ export const Place = () => {
         lat: 34.976944,
         lng: 38.383056,
         urls: [uploadImageUrl ?? null],
+        tags: [],
       }),
     };
 
