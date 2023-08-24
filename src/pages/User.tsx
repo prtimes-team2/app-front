@@ -128,7 +128,8 @@ const Profile = () => {
         {/* 自分の投稿が表示される */}
         <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
           {reports
-            .filter((report) => report.author === profile?.userId)
+            // todo - バックエンドの対応次第でuser_idかuserIdにする
+            .filter((report) => report.user_id === profile?.userId)
             .map((report) => (
               <MainCard
                 key={report.id}

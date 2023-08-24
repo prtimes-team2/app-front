@@ -129,8 +129,16 @@ export const AuthProvider = ({ children }: Props) => {
       const res = await fetch(baseUrl + '/user/login', options);
       const resData = await res.json();
 
+      console.log('---------------- resData ------------');
+      console.log(resData);
+      console.log('---------------- resData ------------');
+
       const userData = resData['User'] as User;
       setUser({ ...userData, prefecture: '22', city: '22210' });
+
+      console.log('---------------- userData ------------');
+      console.log(userData);
+      console.log('---------------- userData ------------');
 
       // 地元が登録されているかどうかを確認
       if (userData.prefecture == null || userData.city == null) {
@@ -142,33 +150,74 @@ export const AuthProvider = ({ children }: Props) => {
         return;
       }
 
-      const reports = resData['Reports'] as { [key: string]: Report };
-      if (!reports) {
-        throw new Error('reports is undefined');
+      const reports = resData['Reports'] as Report[];
+      console.log('---------------- reports ------------');
+      console.log(reports);
+      console.log('---------------- reports ------------');
+
+      const FavoriteReports = resData['FavoriteReports'] as Report[];
+      console.log('---------------- FavoriteReports ------------');
+      console.log(FavoriteReports);
+      console.log('---------------- FavoriteReports ------------');
+
+      const MyReports = resData['MyReports'] as Report[];
+      console.log('---------------- MyReports ------------');
+      console.log(MyReports);
+      console.log('---------------- MyReports ------------');
+
+      // 3つをくっつける
+      const allReports = reports.concat(FavoriteReports ?? [], MyReports ?? []);
+      console.log('---------------- allReports ------------');
+      console.log(allReports);
+      console.log('---------------- allReports ------------');
+
+      // reportがある時は配列に変換してsetする
+      // reportがない時は空の配列をsetする
+      if (allReports) {
+        setReports(allReports);
+      } else {
+        setReports([]);
       }
-      setReports(transformToArr(reports));
 
       const questions = resData['Questions'] as { [key: string]: Question };
-      if (!questions) {
-        throw new Error('questions is undefined');
-      }
-      setQuestions(transformToArr(questions));
+      console.log('---------------- questions ------------');
+      console.log(questions);
+      console.log('---------------- questions ------------');
 
+      // questionがある時は配列に変換してsetする
+      // questionがない時は空の配列をsetする
+      if (questions) {
+        setQuestions(transformToArr(questions));
+      } else {
+        setQuestions([]);
+      }
       const favorites = resData['Favorites'] as { [key: string]: Favorite };
-      if (!favorites) {
-        console.log(resData, 'resData');
-        console.log(resData['Favorite'], 'Favorite');
-        throw new Error('favorites is undefined');
-      }
+      console.log('---------------- favorites ------------');
+      console.log(favorites);
+      console.log('---------------- favorites ------------');
 
-      setFavorites(transformToArr(favorites));
+      // favoriteがある時は配列に変換してsetする
+      // favoriteがない時は空の配列をsetする
+      if (favorites) {
+        setFavorites(transformToArr(favorites));
+      } else {
+        setFavorites([]);
+      }
 
       const coinLogs = resData['CoinLogs'] as { [key: string]: CoinLog };
-      if (!coinLogs) {
-        throw new Error('coinLogs is undefined');
+      console.log('---------------- coinLogs ------------');
+      console.log(coinLogs);
+      console.log('---------------- coinLogs ------------');
+
+      // coinLogがある時は配列に変換してsetする
+      // coinLogがない時は空の配列をsetする
+      if (coinLogs) {
+        setCoinLogs(transformToArr(coinLogs));
+      } else {
+        setCoinLogs([]);
       }
 
-      setCoinLogs(transformToArr(coinLogs));
+      // todo - favoriteに使うreportとユーザーが投稿したreportを別で格納したった言ってた気がするのでつなげる
     } catch (err) {
       // APIのリクエストが失敗した時は、ログイン画面に戻す
       console.log('getUser error');
