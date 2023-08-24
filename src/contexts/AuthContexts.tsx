@@ -5,7 +5,7 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CoinLog } from '../types/coinLog';
-import { Question } from '../types/questions';
+import { Question, SelfQuestion } from '../types/questions';
 import { Report } from '../types/report';
 import { User } from '../types/user';
 
@@ -17,11 +17,13 @@ class AuthContextProps {
   user: User | null = null;
   reports: Report[] = [];
   questions: Question[] = [];
+  selfQuestions: SelfQuestion[] = [];
   favoriteIds: number[] = [];
   coinLogs: CoinLog[] = [];
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setProfile: (profile: Profile | null) => void = () => {};
   setFavorite: (newValue: boolean, reportId: number) => void = () => {};
+  setSelfQuestions: (newValue: SelfQuestion[]) => void = () => {};
 }
 
 export const AuthContext = createContext<AuthContextProps>(
@@ -38,7 +40,8 @@ export const AuthProvider = ({ children }: Props) => {
   const [hasHomeTown, setHasHomeTown] = useState<boolean>(() => false);
   const [user, setUser] = useState<User | null>(() => null);
   const [reports, setReports] = useState<Report[]>(() => []);
-  const [questions, setQuestions] = useState<Question[]>(() => []);
+  const [questions /* setQuestions*/] = useState<Question[]>(() => []);
+  const [selfQuestions, setSelfQuestions] = useState<SelfQuestion[]>(() => []);
   const [favoriteIds, setFavoriteIds] = useState<number[]>(() => []);
   const [coinLogs, setCoinLogs] = useState<CoinLog[]>(() => []);
   const navigate = useNavigate();
@@ -127,8 +130,17 @@ export const AuthProvider = ({ children }: Props) => {
       };
 
       const res = await fetch(baseUrl + '/user/login', options);
-      const resData = await res.json();
+      console.log('---------------- res ------------');
+      console.log(res);
+      console.log('---------------- res ------------');
 
+      if (!res.ok) {
+        console.log('res is not ok');
+        const text = await res.text();
+        console.log(text);
+        return;
+      }
+      const resData = await res.json();
       console.log('---------------- resData ------------');
       console.log(resData);
       console.log('---------------- resData ------------');
@@ -192,17 +204,6 @@ export const AuthProvider = ({ children }: Props) => {
       }
       setFavoriteIds(favIds);
 
-      const questions = resData['Questions'] as { [key: string]: Question };
-      console.log('---------------- questions ------------');
-      console.log(questions);
-      console.log('---------------- questions ------------');
-
-      if (questions) {
-        setQuestions(transformToArr(questions));
-      } else {
-        setQuestions([]);
-      }
-
       const coinLogs = resData['Coinlogs'] as CoinLog[];
       console.log('---------------- coinLogs ------------');
       console.log(coinLogs);
@@ -213,6 +214,9 @@ export const AuthProvider = ({ children }: Props) => {
       } else {
         setCoinLogs([]);
       }
+
+      // 自分の質問を取得する
+      await getSelfQuestions(idToken);
     } catch (err) {
       // APIのリクエストが失敗した時は、ログイン画面に戻す
       console.log('getUser error');
@@ -240,9 +244,31 @@ export const AuthProvider = ({ children }: Props) => {
     setFavoriteIds(newFavoriteIds);
   };
 
-  function transformToArr<T>(data: { [key: string]: T }): Array<T> {
-    return Object.keys(data).map((key) => data[key]);
-  }
+  const getSelfQuestions = async (idToken: string) => {
+    // 自分の質問を取得する
+    // APIにリクエスト
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+    if (!baseUrl) {
+      console.log('baseUrl is undefined');
+      return;
+    }
+
+    // /question/selfにリクエスト
+    const options = {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    };
+
+    const res = await fetch(
+      baseUrl + '/question/self' + `?idToken=${idToken ?? 'id_token'}`,
+      options
+    );
+    const resData = (await res.json()) as SelfQuestion[];
+    console.log(' ---------------- selfQuestion ----------------');
+    console.log(resData);
+    console.log(' ---------------- selfQuestion ----------------');
+    setSelfQuestions(resData);
+  };
 
   useEffect(() => {
     liffInit();
@@ -262,6 +288,8 @@ export const AuthProvider = ({ children }: Props) => {
         favoriteIds,
         coinLogs,
         setFavorite,
+        selfQuestions,
+        setSelfQuestions,
       }}
     >
       {children}
