@@ -24,32 +24,34 @@ import 'dayjs/locale/ja';
 import LoginIcon from '@mui/icons-material/Login';
 
 import { japan } from '../lib/japan';
-import { getCity } from '../lib/getAddress';
+import { getAddress } from '../lib/getAddress';
 import { jenderArr } from '../lib/jender';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContexts';
 
 export default function SignUp() {
   const [prefecture, setPrefecture] = useState<string>('');
-  const [city, setCity] = useState('');
+  const [city, setCity] = useState<string>('');
   const [birthday, setBirthDay] = useState<Date | null>(null);
-  const [jender, setJender] = useState(2);
-  const [open, setOpen] = useState(false);
+  const [jender, setJender] = useState<number>(2);
+  const [open, setOpen] = useState<boolean>(false);
   const { profile } = useContext(AuthContext);
 
   const prefectureLs = japan.map((value) => {
     return (
-      <MenuItem key={value.id} value={value.id}>
+      <MenuItem key={value.name} value={value.name}>
         {value.name}
       </MenuItem>
     );
   });
 
-  const citiesArr = useQuery(['cities', prefecture], () => getCity(prefecture));
+  const citiesArr = useQuery(['cities', prefecture], () =>
+    getAddress.getCitiesArr(getAddress.getPrefId(prefecture))
+  );
 
   let cityLs;
-  if (citiesArr && citiesArr.data && citiesArr.data.data) {
-    cityLs = citiesArr.data.data.map((value: { id: string; name: string }) => {
+  if (citiesArr && citiesArr.data) {
+    cityLs = citiesArr.data.map((value: { id: string; name: string }) => {
       return (
         <MenuItem key={value.id} value={value.id}>
           {value.name}

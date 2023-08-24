@@ -1,5 +1,22 @@
-import { Typography } from '@mui/material';
+import * as React from 'react';
+import { Filter } from '../common/Filter';
+
+import { Box, Typography } from '@mui/material';
 
 export const Question = () => {
-  return <Typography>Question</Typography>;
+  const [address, setAddress] = React.useState('');
+  console.log(address);
+
+  return (
+    <Box>
+      <Box display="flex">
+        <Filter filterKey="post-question" setAddress={setAddress} />
+        <Typography>が地元の方へ</Typography>
+      </Box>
+      <Box>
+        <Typography></Typography>
+      </Box>
+      <Typography>Question</Typography>
+    </Box>
+  );
 };
