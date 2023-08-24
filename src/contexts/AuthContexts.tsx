@@ -1,26 +1,26 @@
 import type { Profile } from '@liff/get-profile';
 import liff from '@line/liff';
 import { LiffMockPlugin } from '@line/liff-mock';
-import type { ReactNode } from 'react';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
+import { Question } from '../types/questions';
 
-type HomeTown = {
-  // 都道府県
-  prefecture: string;
-  // 市区町村
-  city: string;
-};
+import { CoinLog } from '../types/coinLog';
+import { Favorite } from '../types/favorite';
+import { Report } from '../types/report';
+import { User } from '../types/user';
 
 class AuthContextProps {
   isLogIn = false;
   isError = false;
   profile: Profile | null = null;
-  homeTown: HomeTown | null = null;
   hasHomeTown = false;
+  user: User | null = null;
+  reports: Report[] = [];
+  questions: Question[] = [];
+  favorites: Favorite[] = [];
+  coinLogs: CoinLog[] = [];
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setProfile: (profile: Profile | null) => void = () => {};
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setHomeTown: (homeTown: HomeTown | null) => void = () => {};
 }
 
 export const AuthContext = createContext<AuthContextProps>(
@@ -34,18 +34,18 @@ type Props = {
 export const AuthProvider = ({ children }: Props) => {
   const [isLogIn, setLogIn] = useState(false);
   const [profile, setProfileState] = useState<Profile | null>(() => null);
-  const [homeTown, setHomeTownState] = useState<HomeTown | null>(() => null);
   const [hasHomeTown, setHasHomeTown] = useState<boolean>(() => false);
+  const [user, setUser] = useState<User | null>(() => null);
+  const [reports, setReports] = useState<Report[]>(() => []);
+  const [questions, setQuestions] = useState<Question[]>(() => []);
+  const [favorites, setFavorites] = useState<Favorite[]>(() => []);
+  const [coinLogs, setCoinLogs] = useState<CoinLog[]>(() => []);
+
   const isError = profile === null;
 
   const setProfile = async (value: Profile | null) => {
     setLogIn(!!value);
     setProfileState(value);
-  };
-
-  const setHomeTown = async (value: HomeTown | null) => {
-    setHasHomeTown(!!value);
-    setHomeTownState(value);
   };
 
   const liffId = process.env.REACT_APP_LIFF_ID;
@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }: Props) => {
         await liff.init({ liffId, mock: true });
         liff.login();
         setProfile(await liff.getProfile());
-        await getUser();
+        await getUser('id_token');
       } else {
         await liff.init({ liffId, withLoginOnExternalBrowser: true });
         if (!liff.isLoggedIn()) {
@@ -80,16 +80,20 @@ export const AuthProvider = ({ children }: Props) => {
         }
         setProfile(await liff.getProfile());
         console.log('idToken', liff.getIDToken());
+        const idToken = liff.getIDToken();
+        if (!idToken) {
+          console.log('idToken is undefined');
+          return;
+        }
+        await getUser(idToken);
       }
     } catch (err) {
       handleError(err);
     }
   };
 
-  const getUser = async () => {
+  const getUser = async (idToken: string) => {
     console.log('start getUser');
-    // APIにリクエストを行う
-
     try {
       // リクエストを行う
       // ユーザーが取得する
@@ -101,34 +105,64 @@ export const AuthProvider = ({ children }: Props) => {
         return;
       }
 
-      console.log(baseUrl, 'baseUrl');
-
-      // const idToken =
-      //   '';
-
-      // ここでAPIにリクエストを行う
-      // const options = {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ idToken }),
-      // };
-
-      // const res = await fetch(baseUrl + '/line', options);
-      // console.log(res);
-
-      const user = {
-        homeTown: {
-          prefecture: '東京都',
-          city: '渋谷区',
-        },
+      // APIにリクエスト
+      const options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
       };
-      setHomeTown(user.homeTown);
+
+      const res = await fetch(baseUrl + '/user/login', options);
+      const resData = await res.json();
+
+      const userData = resData['User'] as User;
+      setUser(userData);
+
+      // 地元が登録されているかどうかを確認
+      if (userData.prefecture == null || userData.city == null) {
+        setHasHomeTown(false);
+        console.log('地元が登録されていません');
+        // todo - Register画面に遷移させたい
+        return;
+      }
+
+      const reports = resData['Reports'] as { [key: string]: Report };
+      if (!reports) {
+        throw new Error('reports is undefined');
+      }
+      setReports(transformToArr(reports));
+
+      const questions = resData['Questions'] as { [key: string]: Question };
+      if (!questions) {
+        throw new Error('questions is undefined');
+      }
+      setQuestions(transformToArr(questions));
+
+      const favorites = resData['Favorites'] as { [key: string]: Favorite };
+      if (!favorites) {
+        console.log(resData, 'resData');
+        console.log(resData['Favorite'], 'Favorite');
+        throw new Error('favorites is undefined');
+      }
+
+      setFavorites(transformToArr(favorites));
+
+      const coinLogs = resData['CoinLogs'] as { [key: string]: CoinLog };
+      if (!coinLogs) {
+        throw new Error('coinLogs is undefined');
+      }
+
+      setCoinLogs(transformToArr(coinLogs));
     } catch (err) {
       // APIのリクエストが失敗した時は、ログイン画面に戻す
       console.log('getUser error');
       console.log(err);
     }
   };
+
+  function transformToArr<T>(data: { [key: string]: T }): Array<T> {
+    return Object.keys(data).map((key) => data[key]);
+  }
 
   useEffect(() => {
     liffInit();
@@ -141,9 +175,12 @@ export const AuthProvider = ({ children }: Props) => {
         isError,
         profile,
         setProfile,
-        homeTown,
         hasHomeTown,
-        setHomeTown,
+        user,
+        reports,
+        questions,
+        favorites,
+        coinLogs,
       }}
     >
       {children}
