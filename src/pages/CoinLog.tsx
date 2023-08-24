@@ -9,7 +9,11 @@ const AppCoinLog = () => {
       <ul>
         {coinLogs.map((coinLog) => {
           // todo - 日付の表示
-          return <li key={coinLog.id}>{coinLog.amount}</li>;
+          return (
+            <li key={coinLog.id}>
+              {coinLog.amount} /{coinLog.created_at} /
+            </li>
+          );
         })}
       </ul>
     </div>
