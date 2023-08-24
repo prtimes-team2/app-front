@@ -1,4 +1,4 @@
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+// import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import CssBaseline from '@mui/material/CssBaseline';
 import FormControl from '@mui/material/FormControl';
@@ -230,7 +230,7 @@ export const SearchBox = () => {
                 justifyContent: 'flex-end',
               }}
             >
-              <FilterAltIcon />
+              {/* <FilterAltIcon />
               <Typography
                 sx={{
                   fontSize: '12px',
@@ -240,7 +240,7 @@ export const SearchBox = () => {
                 }}
               >
                 詳しく絞りこみ
-              </Typography>
+              </Typography> */}
             </Container>
           </Container>
         </Container>
