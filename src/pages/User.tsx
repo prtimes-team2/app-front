@@ -1,8 +1,18 @@
-import { Avatar, Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
-import React, { useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContexts';
-import { TestCard } from '../components/common/TestCard';
 import { Settings } from '@mui/icons-material';
+import {
+  Avatar,
+  Box,
+  Container,
+  IconButton,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material';
+import React, { useContext, useEffect } from 'react';
+import CountUp from 'react-countup';
+import { Link } from 'react-router-dom';
+import { MainCard } from '../components/common/MainCard';
+import { AuthContext } from '../contexts/AuthContexts';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -42,7 +52,21 @@ const Profile = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const { profile } = useContext(AuthContext);
+  const [totalCoin, setTotalCoin] = React.useState(0);
+
+  const { profile, coinLogs, reports, favorites } = useContext(AuthContext);
+
+  const favoriteIds = favorites
+    .filter((favorite) => favorite.isFavorite === true)
+    .map((favorite) => favorite.reportId);
+
+  useEffect(() => {
+    let total = 0;
+    coinLogs.forEach((coinLog) => {
+      total += coinLog.amount;
+    });
+    setTotalCoin(total);
+  }, [coinLogs]);
   return (
     <>
       <header>
@@ -75,11 +99,16 @@ const Profile = () => {
                 残高
               </Typography>
               <Typography variant="h2" component="div" fontWeight={'bold'}>
-                {/* TODO: コイン数表示 */}0
+                <CountUp start={0} end={totalCoin} duration={0.3} />
               </Typography>
               <Typography variant="body2" component="div" marginLeft={2}>
                 コイン
               </Typography>
+              <Link to={'/app/coinlog'}>
+                <Typography variant="body2" component="div" marginLeft={2}>
+                  履歴
+                </Typography>
+              </Link>
             </Box>
           </Box>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -96,10 +125,37 @@ const Profile = () => {
         </Box>
       </header>
       <CustomTabPanel value={value} index={0}>
-        <TestCard />
+        {/* 自分の投稿が表示される */}
+        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+          {reports
+            .filter((report) => report.author === profile?.userId)
+            .map((report) => (
+              <MainCard
+                key={report.id}
+                image="https://source.unsplash.com/random"
+                title={report.title}
+                detail={report.content}
+                // 一旦50%の確率でtrueにする
+                isFavorite={Math.random() < 0.5}
+              />
+            ))}
+        </Container>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <TestCard />
+        {/* お気に入りの投稿が表示される reportにあって、favoritesのidのものだけを表示したい */}
+        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+          {reports
+            .filter((report) => favoriteIds.includes(report.id))
+            .map((report) => (
+              <MainCard
+                key={report.id}
+                image="https://source.unsplash.com/random"
+                title={report.title}
+                detail={report.content}
+                isFavorite={true}
+              />
+            ))}
+        </Container>
       </CustomTabPanel>
     </>
   );

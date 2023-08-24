@@ -1,37 +1,32 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useEffect, useState } from 'react';
-// import { useContext } from 'react';
-import type { FeatureCollection } from 'geojson';
-import type { CircleLayer } from 'react-map-gl';
-import Map, { Layer, Source } from 'react-map-gl';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import Map, {
+  // CircleLayer,
+  GeolocateControl,
+  Marker,
+  Popup,
+} from 'react-map-gl';
 import { AddFab } from '../components/common/AddFab';
+import Pin from '../components/Map/pin';
 
-// import { AuthContext } from '../contexts/AuthContexts';
+import MapboxLanguage from '@mapbox/mapbox-gl-language';
+
+import { AuthContext } from '../contexts/AuthContexts';
 
 import { Loading } from '../components/Loading';
+import { Report } from '../types/report';
 
 const AppMap = () => {
-  const [geojson, setGeojson] = useState<FeatureCollection>({
-    type: 'FeatureCollection',
-    features: [
-      {
-        type: 'Feature',
-        geometry: { type: 'Point', coordinates: [-122.4, 37.8] },
-        properties: {},
-      },
-    ],
-  });
+  const { reports } = useContext(AuthContext);
+  const map = useRef(null);
+  const geoControlRef = useRef();
 
-  const [layerStyle /* setLayerStyle */] = useState<CircleLayer>({
-    id: 'point',
-    type: 'circle',
-    paint: {
-      'circle-radius': 10,
-      'circle-color': '#007cbf',
-    },
-  });
-
-  //   const { profile, isLogIn } = useContext(AuthContext);
+  useEffect(() => {
+    // Activate as soon as the control is loaded
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    geoControlRef.current?.trigger();
+  }, [geoControlRef.current]);
 
   const mapToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -40,7 +35,6 @@ const AppMap = () => {
   }
 
   // 現在地の取得
-
   const [viewport, setViewport] = useState({
     latitude: 0,
     longitude: 0,
@@ -62,27 +56,48 @@ const AppMap = () => {
           console.log(err);
       }
     );
-
-    setGeojson({
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [139.7426222, 35.6698195],
-          },
-          properties: {},
-        },
-      ],
-    });
   }, []);
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  function onLoadMap(e) {
+    const map = e?.target;
+    if (map) {
+      // 言語設定
+      const language = new MapboxLanguage();
+      map.addControl(language);
+    }
+  }
+
+  const [popupInfo, setPopupInfo] = useState<Report | null>(null);
+
+  const pins = useMemo(
+    () =>
+      reports.map((report: Report, index: number) => (
+        <Marker
+          key={`marker-${index}`}
+          longitude={report.lng}
+          latitude={report.lat}
+          anchor="bottom"
+          onClick={(e) => {
+            // If we let the click event propagates to the map, it will immediately close the popup
+            // with `closeOnClick: true`
+            e.originalEvent.stopPropagation();
+            setPopupInfo(report);
+          }}
+        >
+          <Pin />
+        </Marker>
+      )),
+    []
+  );
 
   return (
     <div className="App">
       <header className="App-header">
         {viewport.latitude !== 0 && viewport.longitude !== 0 ? (
           <Map
+            ref={map}
             mapboxAccessToken={mapToken}
             initialViewState={{
               longitude: viewport.longitude,
@@ -90,11 +105,34 @@ const AppMap = () => {
               zoom: 14,
             }}
             style={{ width: '100vw', height: 'calc(100vh - 56px)' }}
-            mapStyle="mapbox://styles/mapbox/streets-v9"
+            mapStyle="mapbox://styles/mapbox/streets-v11"
+            onLoad={() => onLoadMap}
           >
-            <Source id="my-data" type="geojson" data={geojson}>
-              <Layer {...layerStyle} />
-            </Source>
+            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+            {/* @ts-ignore */}
+            <GeolocateControl ref={geoControlRef} />
+
+            {pins}
+
+            {popupInfo && (
+              <Popup
+                anchor="top"
+                longitude={Number(popupInfo.lng)}
+                latitude={Number(popupInfo.lat)}
+                onClose={() => setPopupInfo(null)}
+              >
+                <div>
+                  {popupInfo.id}, {popupInfo.content} |{' '}
+                  <a
+                    target="_new"
+                    href={`http://en.wikipedia.org/w/index.php?title=Special:Search&search=${popupInfo.id}, ${popupInfo.id}`}
+                  >
+                    Wikipedia
+                  </a>
+                </div>
+                {/* <img width="100%" src={popupInfo.} /> */}
+              </Popup>
+            )}
           </Map>
         ) : (
           <div>
