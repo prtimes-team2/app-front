@@ -62,6 +62,7 @@ export const AddModal = (prop: Props) => {
             >
               <button
                 onClick={() => {
+                  setIsResult(false);
                   prop.handleClose();
                 }}
               >

@@ -1,6 +1,13 @@
 import liff from '@line/liff';
 import SendIcon from '@mui/icons-material/Send';
-import { Box, Button, Container, Stack, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Stack,
+  TextField,
+} from '@mui/material';
 import { useCallback, useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContexts';
 import { uploadImage } from '../../useFirebaseClient';
@@ -19,6 +26,7 @@ export const Place = (prop: Props) => {
   const [hasSubTitleError, setHasSubTitleError] = useState(false);
   const [imageData, setImageData] = useState<File>();
   const [localImage, setLocalImage] = useState<string>();
+  const [loading, setLoading] = useState(false);
 
   function handleFileChange(id: number) {
     return (file: File) => {
@@ -50,6 +58,7 @@ export const Place = (prop: Props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     console.log(`Sybmit Title: ${title}`);
     console.log(`Sybmit SubTitle: ${subTitle}`);
@@ -96,6 +105,7 @@ export const Place = (prop: Props) => {
     const resData = (await res.json()) as { amount: number };
     console.log(resData);
 
+    setLoading(false);
     prop.handleResult(true, resData.amount);
   };
 
@@ -116,6 +126,7 @@ export const Place = (prop: Props) => {
     >
       <Stack spacing={2}>
         <TextField
+          disabled={loading}
           sx={{ width: '100%' }}
           type="text"
           label="タイトル"
@@ -126,6 +137,7 @@ export const Place = (prop: Props) => {
           helperText={hasTitleError ? 'タイトルを入力してください。' : ''}
         />
         <TextField
+          disabled={loading}
           sx={{ width: '100%' }}
           type="text"
           label="サブタイトル"
@@ -145,8 +157,9 @@ export const Place = (prop: Props) => {
           </Box>
         </Container>
         <Button
+          disabled={loading}
           variant="outlined"
-          endIcon={<SendIcon />}
+          endIcon={!loading ? <SendIcon /> : <CircularProgress />}
           type="submit"
           sx={{
             borderRadius: 2,
