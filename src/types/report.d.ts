@@ -1,4 +1,5 @@
 export interface Report {
   id: string;
-  // 後で追加
+  lat: number;
+  lng: number;
 }

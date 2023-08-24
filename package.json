@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.11.0",
     "@line/liff": "^2.22.2",
     "@line/liff-mock": "^1.0.3",
+    "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "@mapbox/mapbox-gl-language": "^1.0.1",
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.5",
