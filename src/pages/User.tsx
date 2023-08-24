@@ -1,8 +1,10 @@
-import { Avatar, Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
-import React, { useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContexts';
-import { TestCard } from '../components/common/TestCard';
 import { Settings } from '@mui/icons-material';
+import { Avatar, Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
+import React, { useContext, useEffect } from 'react';
+import CountUp from 'react-countup';
+import { Link } from 'react-router-dom';
+import { TestCard } from '../components/common/TestCard';
+import { AuthContext } from '../contexts/AuthContexts';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -42,7 +44,17 @@ const Profile = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const { profile } = useContext(AuthContext);
+  const [totalCoin, setTotalCoin] = React.useState(0);
+
+  const { profile, coinLogs } = useContext(AuthContext);
+
+  useEffect(() => {
+    let total = 0;
+    coinLogs.forEach((coinLog) => {
+      total += coinLog.amount;
+    });
+    setTotalCoin(total);
+  }, [coinLogs]);
   return (
     <>
       <header>
@@ -75,11 +87,16 @@ const Profile = () => {
                 残高
               </Typography>
               <Typography variant="h2" component="div" fontWeight={'bold'}>
-                {/* TODO: コイン数表示 */}0
+                <CountUp start={0} end={totalCoin} duration={0.3} />
               </Typography>
               <Typography variant="body2" component="div" marginLeft={2}>
                 コイン
               </Typography>
+              <Link to={'/app/coinlog'}>
+                <Typography variant="body2" component="div" marginLeft={2}>
+                  履歴
+                </Typography>
+              </Link>
             </Box>
           </Box>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
