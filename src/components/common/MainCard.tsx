@@ -7,11 +7,12 @@ import {
   CardContent,
   CardMedia,
   IconButton,
+  Skeleton,
   Typography,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContexts';
 
 interface propsType {
@@ -94,6 +95,18 @@ export const MainCard = (props: propsType) => {
     setFavorite(newValue, props.postKey);
   };
 
+  const [showSkeleton, setShowSkeleton] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSkeleton(false);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer); // クリーンアップ関数として、コンポーネントのアンマウント時にタイマーをクリア
+    };
+  }, []);
+
   return (
     <Box marginBottom={1}>
       <Card
@@ -109,17 +122,35 @@ export const MainCard = (props: propsType) => {
             navigate(`/app/detail/${props.postKey}`);
           }}
         >
-          <CardMedia
-            image={props.image}
-            title="画像"
-            sx={{
-              height: 75,
-              width: 75,
-              minWidth: 75,
-              objectFit: 'cover',
-              padding: 2,
-            }}
-          />
+          {showSkeleton ? (
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              sx={{
+                height: 75,
+                width: 75,
+                minWidth: 75,
+                objectFit: 'cover',
+                padding: 2,
+              }}
+            >
+              <Typography>.</Typography>
+            </Skeleton>
+          ) : (
+            <CardMedia
+              image={
+                props.image ? props.image : 'https://source.unsplash.com/random'
+              }
+              title="画像"
+              sx={{
+                height: 75,
+                width: 75,
+                minWidth: 75,
+                objectFit: 'cover',
+                padding: 2,
+              }}
+            />
+          )}
           <Box sx={{ flex: '1' }} position={'relative'} overflow={'hidden'}>
             <CardContent>
               <Typography
