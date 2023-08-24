@@ -1,8 +1,9 @@
+import * as React from 'react';
 import { Box, Container } from '@mui/material';
 
 import { MainCard } from '../common/MainCard';
+import { Filter } from '../common/Filter';
 
-import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContexts';
 
 interface TabPanelProps {
@@ -36,12 +37,20 @@ type ContentProps = {
 };
 
 export const Content = ({ value }: ContentProps) => {
-  const { reports, questions } = useContext(AuthContext);
+  const [address, setAddress] = React.useState('');
+  console.log(address);
+
+  React.useEffect(() => {}, [address]);
+
+  const { reports, questions } = React.useContext(AuthContext);
   return (
     <>
       <CustomTabPanel value={value} index={0}>
+        <Box display="flex" justifyContent="flex-end">
+          <Filter filterKey="home" setAddress={setAddress} />
+        </Box>
         {/* reportsを.mapして、MainCardに入れる*/}
-        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+        <Container maxWidth="sm" sx={{ mt: 1, paddingBottom: '35px' }}>
           {reports.map((report) => (
             <MainCard
               key={report.id}

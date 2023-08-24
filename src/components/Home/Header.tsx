@@ -1,6 +1,7 @@
-import { Box, Tab, Tabs, Typography } from '@mui/material';
-import React from 'react';
+import * as React from 'react';
+
 import { Content } from './Content';
+import { Box, Tab, Tabs, Typography } from '@mui/material';
 
 function a11yProps(index: number) {
   return {
