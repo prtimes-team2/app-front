@@ -89,6 +89,7 @@ export const SearchBox = () => {
         lng: 0,
         tags: {},
         imageUrls: {},
+        created_at: '',
       });
     });
 
