@@ -1,5 +1,5 @@
 export interface Favorite {
   userId: string;
-  reportId: string;
+  reportId: number;
   isFavorite: boolean;
 }
