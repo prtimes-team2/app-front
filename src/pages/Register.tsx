@@ -52,8 +52,6 @@ export default function SignUp() {
     });
   }
 
-  console.log(cityLs);
-
   const jenderLs = jenderArr.map((obj) => {
     return (
       <MenuItem key={obj.id} value={obj.id}>
