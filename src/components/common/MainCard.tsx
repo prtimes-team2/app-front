@@ -1,3 +1,5 @@
+import liff from '@line/liff';
+import PlaceIcon from '@mui/icons-material/Place';
 import {
   Box,
   Card,
@@ -7,8 +9,10 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import PlaceIcon from '@mui/icons-material/Place';
 import { useNavigate } from 'react-router-dom';
+
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContexts';
 
 interface propsType {
   postKey: number;
@@ -16,7 +20,7 @@ interface propsType {
   title: string;
   detail: string;
   address: string;
-  isFavorite?: boolean;
+  isFavorite: boolean;
 }
 
 const FavoriteIconBk = () => {
@@ -61,7 +65,35 @@ const FavoriteIconRed = () => {
 };
 
 export const MainCard = (props: propsType) => {
+  const { setFavorite } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const setLiked = async (newValue: boolean) => {
+    // apiにpostする
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+    if (!baseUrl) {
+      console.log('baseUrl is undefined');
+      return;
+    }
+
+    // APIにリクエスト
+    const options = {
+      method: newValue ? 'POST' : 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idToken: liff.getIDToken() ?? 'id_token',
+        reportId: props.postKey,
+      }),
+    };
+
+    const res = await fetch(baseUrl + '/favorite', options);
+    const resData = await res.json();
+    console.log(resData);
+
+    // いいねの状態を更新
+    setFavorite(newValue, props.postKey);
+  };
+
   return (
     <Box marginBottom={1}>
       <Card
@@ -141,9 +173,7 @@ export const MainCard = (props: propsType) => {
         >
           <IconButton
             aria-label="add to favorites"
-            onClick={() => {
-              console.log('liked!');
-            }}
+            onClick={() => setLiked(!props.isFavorite)}
           >
             {props.isFavorite ? <FavoriteIconBk /> : <FavoriteIconRed />}
           </IconButton>

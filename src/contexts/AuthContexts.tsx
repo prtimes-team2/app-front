@@ -5,7 +5,6 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CoinLog } from '../types/coinLog';
-import { Favorite } from '../types/favorite';
 import { Question } from '../types/questions';
 import { Report } from '../types/report';
 import { User } from '../types/user';
@@ -18,10 +17,11 @@ class AuthContextProps {
   user: User | null = null;
   reports: Report[] = [];
   questions: Question[] = [];
-  favorites: Favorite[] = [];
+  favoriteIds: number[] = [];
   coinLogs: CoinLog[] = [];
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setProfile: (profile: Profile | null) => void = () => {};
+  setFavorite: (newValue: boolean, reportId: number) => void = () => {};
 }
 
 export const AuthContext = createContext<AuthContextProps>(
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(() => null);
   const [reports, setReports] = useState<Report[]>(() => []);
   const [questions, setQuestions] = useState<Question[]>(() => []);
-  const [favorites, setFavorites] = useState<Favorite[]>(() => []);
+  const [favoriteIds, setFavoriteIds] = useState<number[]>(() => []);
   const [coinLogs, setCoinLogs] = useState<CoinLog[]>(() => []);
   const navigate = useNavigate();
 
@@ -145,7 +145,6 @@ export const AuthProvider = ({ children }: Props) => {
         setHasHomeTown(false);
         console.log('地元が登録されていません');
         // register画面に遷移する
-
         navigate('/register');
         return;
       }
@@ -167,17 +166,33 @@ export const AuthProvider = ({ children }: Props) => {
 
       // 3つをくっつける
       const allReports = reports.concat(FavoriteReports ?? [], MyReports ?? []);
+
+      // 同じidのものを削除する
+      const uniqueReports = allReports.filter(
+        (element, index, self) =>
+          self.findIndex((e) => e.id === element.id) === index
+      );
+
       console.log('---------------- allReports ------------');
-      console.log(allReports);
+      console.log(uniqueReports);
       console.log('---------------- allReports ------------');
 
       // reportがある時は配列に変換してsetする
       // reportがない時は空の配列をsetする
       if (allReports) {
-        setReports(allReports);
+        setReports(uniqueReports);
       } else {
         setReports([]);
       }
+
+      // favotiteしている配列を作成する
+      const favIds: number[] = [];
+      if (FavoriteReports) {
+        for (const report of FavoriteReports) {
+          favIds.push(report.id);
+        }
+      }
+      setFavoriteIds(favIds);
 
       const questions = resData['Questions'] as { [key: string]: Question };
       console.log('---------------- questions ------------');
@@ -190,18 +205,6 @@ export const AuthProvider = ({ children }: Props) => {
         setQuestions(transformToArr(questions));
       } else {
         setQuestions([]);
-      }
-      const favorites = resData['Favorites'] as { [key: string]: Favorite };
-      console.log('---------------- favorites ------------');
-      console.log(favorites);
-      console.log('---------------- favorites ------------');
-
-      // favoriteがある時は配列に変換してsetする
-      // favoriteがない時は空の配列をsetする
-      if (favorites) {
-        setFavorites(transformToArr(favorites));
-      } else {
-        setFavorites([]);
       }
 
       const coinLogs = resData['CoinLogs'] as { [key: string]: CoinLog };
@@ -216,13 +219,31 @@ export const AuthProvider = ({ children }: Props) => {
       } else {
         setCoinLogs([]);
       }
-
-      // todo - favoriteに使うreportとユーザーが投稿したreportを別で格納したった言ってた気がするのでつなげる
     } catch (err) {
       // APIのリクエストが失敗した時は、ログイン画面に戻す
       console.log('getUser error');
       console.log(err);
     }
+  };
+
+  const setFavorite = async (newValue: boolean, reportId: number) => {
+    console.log('setFavorite');
+    console.log(newValue);
+    console.log(reportId);
+    // setFavoriteIdsを更新する
+    // newValueがtrueの時は、reportIdを追加する
+    // newValueがfalseの時は、reportIdを削除する
+    const newFavoriteIds = [...favoriteIds];
+    if (newValue) {
+      newFavoriteIds.push(reportId);
+    }
+    if (!newValue) {
+      const index = newFavoriteIds.indexOf(reportId);
+      if (index > -1) {
+        newFavoriteIds.splice(index, 1);
+      }
+    }
+    setFavoriteIds(newFavoriteIds);
   };
 
   function transformToArr<T>(data: { [key: string]: T }): Array<T> {
@@ -244,8 +265,9 @@ export const AuthProvider = ({ children }: Props) => {
         user,
         reports,
         questions,
-        favorites,
+        favoriteIds,
         coinLogs,
+        setFavorite,
       }}
     >
       {children}
