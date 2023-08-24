@@ -2,10 +2,11 @@ import type { Profile } from '@liff/get-profile';
 import liff from '@line/liff';
 import { LiffMockPlugin } from '@line/liff-mock';
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import { Question } from '../types/questions';
+import { useNavigate } from 'react-router-dom';
 
 import { CoinLog } from '../types/coinLog';
 import { Favorite } from '../types/favorite';
+import { Question } from '../types/questions';
 import { Report } from '../types/report';
 import { User } from '../types/user';
 
@@ -40,6 +41,7 @@ export const AuthProvider = ({ children }: Props) => {
   const [questions, setQuestions] = useState<Question[]>(() => []);
   const [favorites, setFavorites] = useState<Favorite[]>(() => []);
   const [coinLogs, setCoinLogs] = useState<CoinLog[]>(() => []);
+  const navigate = useNavigate();
 
   const isError = profile === null;
 
@@ -122,7 +124,8 @@ export const AuthProvider = ({ children }: Props) => {
       if (userData.prefecture == null || userData.city == null) {
         setHasHomeTown(false);
         console.log('地元が登録されていません');
-        // todo - Register画面に遷移させたい
+        // register画面に遷移する
+        navigate('/register');
         return;
       }
 
