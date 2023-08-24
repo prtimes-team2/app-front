@@ -13,24 +13,15 @@ import {
   Typography,
 } from '@mui/material';
 
+import { getAddress } from '../../lib/getAddress';
+
 import { japan } from '../../lib/japan';
-import { getCity } from '../../lib/getAddress';
 import { User } from '../../types/user';
 
 interface propsType {
   filterKey: string;
   setAddress: React.Dispatch<React.SetStateAction<string>>;
 }
-
-const getStringPrefecture = (prefId: string) => {
-  const result = japan.filter((value) => value.id === prefId);
-
-  if (result.length > 0) {
-    return result[0].name;
-  }
-
-  return '';
-};
 
 export const Filter = (prop: propsType) => {
   const { user } = React.useContext(AuthContext);
@@ -42,28 +33,29 @@ export const Filter = (prop: propsType) => {
 const Inner = (prop: propsType & { user: User }) => {
   const { user } = prop;
 
-  const [prefecture, setPrefecture] = React.useState(user.prefecture);
-  const [city, setCity] = React.useState(user.city);
+  const [prefecture, setPrefecture] = React.useState<string>(user.prefecture);
+  const [city, setCity] = React.useState<string>(user.city);
 
   const prefectureLs = japan.map((value) => {
     return (
-      <MenuItem key={prop.filterKey + value.id} value={value.id}>
+      <MenuItem
+        key={`${prop.filterKey}-prefecture-${value.id}`}
+        value={value.name}
+      >
         {value.name}
       </MenuItem>
     );
   });
 
-  const citiesArr = useQuery(['cities', prefecture], () => getCity(prefecture));
+  const citiesArr = useQuery(['cities', prefecture], () =>
+    getAddress.getCitiesArr(getAddress.getPrefId(prefecture))
+  );
 
-  let cityLs, stringCity: { name: string };
-  if (citiesArr && citiesArr.data && citiesArr.data.data) {
-    stringCity = citiesArr.data.data.find(
-      (obj: { id: string }) => obj.id === city
-    );
-
-    cityLs = citiesArr.data.data.map((value: { id: string; name: string }) => {
+  let cityLs;
+  if (citiesArr && citiesArr.data) {
+    cityLs = citiesArr.data.map((value: { id: string; name: string }) => {
       return (
-        <MenuItem key={prop.filterKey + value.id} value={value.id}>
+        <MenuItem key={`${prop.filterKey}-city-${value.id}`} value={value.name}>
           {value.name}
         </MenuItem>
       );
@@ -71,12 +63,8 @@ const Inner = (prop: propsType & { user: User }) => {
   }
 
   React.useEffect(() => {
-    if (!city) {
-      return;
-    }
-
-    prop.setAddress(getStringPrefecture(prefecture) + stringCity?.name);
-  }, [city, citiesArr]);
+    prop.setAddress(prefecture + city);
+  }, [city]);
 
   return (
     <Container

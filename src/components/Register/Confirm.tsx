@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { Box, Button, Card, Typography } from '@mui/material';
 
-import { getCity } from '../../lib/getAddress';
+import { getAddress } from '../../lib/getAddress';
 import { japan } from '../../lib/japan';
 import { jenderArr } from '../../lib/jender';
 
@@ -28,15 +28,14 @@ const style = {
 export const Confirm = (prop: propsType) => {
   const prefecture = japan.find((obj) => (obj.id = prop.prefecture));
 
-  const cityArr = useQuery(['data'], () => getCity(prop.prefecture));
-
+  const citiesArr = useQuery(['cities', prefecture], () =>
+    getAddress.getCitiesArr(getAddress.getPrefId(prop.prefecture))
+  );
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   let city: { id: string; name: string } | undefined;
-  if (cityArr && cityArr.data && cityArr.data.data) {
-    city = cityArr.data.data.find(
-      (obj: { id: string }) => obj.id === prop.city
-    );
+  if (citiesArr && citiesArr.data) {
+    city = citiesArr.data.find((obj: { id: string }) => obj.id === prop.city);
   }
 
   const jender = jenderArr[prop.jender].value;
