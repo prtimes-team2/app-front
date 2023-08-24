@@ -1,6 +1,9 @@
-import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Container, Tab, Tabs, Typography } from '@mui/material';
 import React from 'react';
-import { TestCard } from '../common/TestCard';
+import { MainCard } from '../common/MainCard';
+
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContexts';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -36,6 +39,7 @@ function a11yProps(index: number) {
 }
 
 export const Header = () => {
+  const { reports, questions } = useContext(AuthContext);
   const [value, setValue] = React.useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -68,10 +72,32 @@ export const Header = () => {
         </Box>
       </header>
       <CustomTabPanel value={value} index={0}>
-        <TestCard />
+        {/* reportsを.mapして、MainCardに入れる*/}
+        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+          {reports.map((report) => (
+            <MainCard
+              key={report.id}
+              image="https://source.unsplash.com/random"
+              title={report.title}
+              detail={report.content}
+              // 一旦50%の確率でtrueにする
+              isFavorite={Math.random() < 0.5}
+            />
+          ))}
+        </Container>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        新着質問画面
+        {/* questionsを.mapしてMainCardに入れる */}
+        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+          {questions.map((question) => (
+            <MainCard
+              key={question.id}
+              image="https://source.unsplash.com/random"
+              title={question.content}
+              detail={question.city}
+            />
+          ))}
+        </Container>
       </CustomTabPanel>
     </>
   );
