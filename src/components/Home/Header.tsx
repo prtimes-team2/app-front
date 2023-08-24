@@ -1,35 +1,6 @@
-import { Box, Container, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Tab, Tabs, Typography } from '@mui/material';
 import React from 'react';
-import { MainCard } from '../common/MainCard';
-
-import { useContext } from 'react';
-import { AuthContext } from '../../contexts/AuthContexts';
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function CustomTabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 1, pt: 2 }}>
-          <Box>{children}</Box>
-        </Box>
-      )}
-    </div>
-  );
-}
+import { Content } from './Content';
 
 function a11yProps(index: number) {
   return {
@@ -39,7 +10,6 @@ function a11yProps(index: number) {
 }
 
 export const Header = () => {
-  const { reports, questions } = useContext(AuthContext);
   const [value, setValue] = React.useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -47,8 +17,15 @@ export const Header = () => {
 
   return (
     <>
-      <header>
-        <Box position="sticky" top={0} bgcolor={'white'}>
+      <header
+        style={{
+          position: 'sticky',
+          top: 0,
+          backgroundColor: 'white',
+          zIndex: 1,
+        }}
+      >
+        <Box bgcolor={'white'}>
           <Typography
             variant="h5"
             sx={{
@@ -72,34 +49,7 @@ export const Header = () => {
           </Box>
         </Box>
       </header>
-      <CustomTabPanel value={value} index={0}>
-        {/* reportsを.mapして、MainCardに入れる*/}
-        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
-          {reports.map((report) => (
-            <MainCard
-              key={report.id}
-              image="https://source.unsplash.com/random"
-              title={report.title}
-              detail={report.content}
-              // 一旦50%の確率でtrueにする
-              isFavorite={Math.random() < 0.5}
-            />
-          ))}
-        </Container>
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        {/* questionsを.mapしてMainCardに入れる */}
-        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
-          {questions.map((question) => (
-            <MainCard
-              key={question.id}
-              image="https://source.unsplash.com/random"
-              title={question.content}
-              detail={question.city}
-            />
-          ))}
-        </Container>
-      </CustomTabPanel>
+      <Content value={value} />
     </>
   );
 };
