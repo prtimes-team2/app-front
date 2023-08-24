@@ -130,13 +130,14 @@ export const AuthProvider = ({ children }: Props) => {
       const resData = await res.json();
 
       const userData = resData['User'] as User;
-      setUser(userData);
+      setUser({ ...userData, prefecture: '22', city: '22210' });
 
       // 地元が登録されているかどうかを確認
       if (userData.prefecture == null || userData.city == null) {
         setHasHomeTown(false);
         console.log('地元が登録されていません');
         // register画面に遷移する
+
         navigate('/register');
         return;
       }
