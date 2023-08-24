@@ -153,7 +153,7 @@ export const AuthProvider = ({ children }: Props) => {
       console.log('---------------- userData ------------');
 
       // 地元が登録されているかどうかを確認
-      if (userData.prefecture == null || userData.city == null) {
+      if (!userData.prefecture || !userData.city) {
         setHasHomeTown(false);
         console.log('地元が登録されていません');
         // register画面に遷移する
