@@ -30,7 +30,7 @@ export const Question = () => {
       setBodyText(inputValue);
       setHasBodyTextError(isEmpty);
     },
-    [setBodyText, , setHasBodyTextError]
+    [setBodyText, setHasBodyTextError]
   );
 
   return (
