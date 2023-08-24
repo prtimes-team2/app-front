@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-
 import { Box, Button, Card, Typography } from '@mui/material';
 
 import { japan } from '../../lib/japan';
