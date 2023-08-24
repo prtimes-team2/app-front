@@ -90,6 +90,7 @@ export const SearchBox = () => {
         tags: {},
         imageUrls: {},
         created_at: '',
+        user_id: '',
       });
     });
 
