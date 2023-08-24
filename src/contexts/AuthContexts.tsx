@@ -166,14 +166,21 @@ export const AuthProvider = ({ children }: Props) => {
 
       // 3つをくっつける
       const allReports = reports.concat(FavoriteReports ?? [], MyReports ?? []);
+
+      // 同じidのものを削除する
+      const uniqueReports = allReports.filter(
+        (element, index, self) =>
+          self.findIndex((e) => e.id === element.id) === index
+      );
+
       console.log('---------------- allReports ------------');
-      console.log(allReports);
+      console.log(uniqueReports);
       console.log('---------------- allReports ------------');
 
       // reportがある時は配列に変換してsetする
       // reportがない時は空の配列をsetする
       if (allReports) {
-        setReports(allReports);
+        setReports(uniqueReports);
       } else {
         setReports([]);
       }
