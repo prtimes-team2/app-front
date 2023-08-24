@@ -1,20 +1,23 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Map, {
   // CircleLayer,
   GeolocateControl,
+  Marker,
+  Popup,
 } from 'react-map-gl';
 import { AddFab } from '../components/common/AddFab';
+import Pin from '../components/Map/pin';
 
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 
-// import { AuthContext } from '../contexts/AuthContexts';
+import { AuthContext } from '../contexts/AuthContexts';
 
 import { Loading } from '../components/Loading';
-// import { Report } from '../types/report';
+import { Report } from '../types/report';
 
 const AppMap = () => {
-  // const { reports } = useContext(AuthContext);
+  const { reports } = useContext(AuthContext);
   const map = useRef(null);
   const geoControlRef = useRef();
 
@@ -66,28 +69,28 @@ const AppMap = () => {
     }
   }
 
-  // const [popupInfo, setPopupInfo] = useState<Report | null>(null);
+  const [popupInfo, setPopupInfo] = useState<Report | null>(null);
 
-  // const pins = useMemo(
-  //   () =>
-  //     reports.map((report: Report, index: number) => (
-  //       <Marker
-  //         key={`marker-${index}`}
-  //         longitude={report.lng}
-  //         latitude={report.lat}
-  //         anchor="bottom"
-  //         onClick={(e) => {
-  //           // If we let the click event propagates to the map, it will immediately close the popup
-  //           // with `closeOnClick: true`
-  //           e.originalEvent.stopPropagation();
-  //           setPopupInfo(report);
-  //         }}
-  //       >
-  //         <Pin />
-  //       </Marker>
-  //     )),
-  //   []
-  // );
+  const pins = useMemo(
+    () =>
+      reports.map((report: Report, index: number) => (
+        <Marker
+          key={`marker-${index}`}
+          longitude={report.lng}
+          latitude={report.lat}
+          anchor="bottom"
+          onClick={(e) => {
+            // If we let the click event propagates to the map, it will immediately close the popup
+            // with `closeOnClick: true`
+            e.originalEvent.stopPropagation();
+            setPopupInfo(report);
+          }}
+        >
+          <Pin />
+        </Marker>
+      )),
+    []
+  );
 
   return (
     <div className="App">
@@ -109,9 +112,9 @@ const AppMap = () => {
             {/* @ts-ignore */}
             <GeolocateControl ref={geoControlRef} />
 
-            {/* {pins} */}
+            {pins}
 
-            {/* {popupInfo && (
+            {popupInfo && (
               <Popup
                 anchor="top"
                 longitude={Number(popupInfo.lng)}
@@ -119,7 +122,7 @@ const AppMap = () => {
                 onClose={() => setPopupInfo(null)}
               >
                 <div>
-                  {popupInfo.id}, {popupInfo.id} |{' '}
+                  {popupInfo.id}, {popupInfo.content} |{' '}
                   <a
                     target="_new"
                     href={`http://en.wikipedia.org/w/index.php?title=Special:Search&search=${popupInfo.id}, ${popupInfo.id}`}
@@ -127,9 +130,9 @@ const AppMap = () => {
                     Wikipedia
                   </a>
                 </div>
-                <img width="100%" src={popupInfo.} />
+                {/* <img width="100%" src={popupInfo.} /> */}
               </Popup>
-            )} */}
+            )}
           </Map>
         ) : (
           <div>
