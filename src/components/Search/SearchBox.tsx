@@ -110,8 +110,14 @@ export const SearchBox = () => {
       });
     });
 
+    //重複を削除
+    const uniqueArray = filteredTagArray.filter(
+      (item, index) =>
+        filteredTagArray.findIndex((item2) => item.id === item2.id) === index
+    );
+
     // idを使ってその都道府県の投稿を取得する
-    setSearchResultContent(filteredTagArray);
+    setSearchResultContent(uniqueArray);
   };
 
   useEffect(() => {
