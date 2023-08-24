@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-
 import { Box, Button, Card, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 
 import { getCity } from '../../lib/getAddress';
 import { japan } from '../../lib/japan';
 import { jenderArr } from '../../lib/jender';
+import { useNavigate } from 'react-router-dom';
 
 interface propsType {
   prefecture: string;
@@ -26,6 +26,7 @@ const style = {
 };
 
 export const Confirm = (prop: propsType) => {
+  const navigate = useNavigate();
   const prefecture = japan.find((obj) => (obj.id = prop.prefecture));
 
   const cityArr = useQuery(['data'], () => getCity(prop.prefecture));
@@ -39,7 +40,7 @@ export const Confirm = (prop: propsType) => {
     );
   }
 
-  const jender = jenderArr[prop.jender].value;
+  const jender = jenderArr[prop.jender];
 
   let japaneseDate = '';
   if (prop.birthday) {
@@ -48,10 +49,9 @@ export const Confirm = (prop: propsType) => {
     }月${new Date(prop.birthday).getDate()}日`;
   }
 
-  const submit = () => {
+  const submit = async () => {
     console.log('submit');
     console.log(prop.birthday, 'prop.birthday');
-    console.log(japaneseDate, 'japaneseDate');
     console.log(jender, 'jender');
     if (!city) {
       throw new Error('city is undefined');
@@ -59,10 +59,45 @@ export const Confirm = (prop: propsType) => {
     if (!prefecture) {
       throw new Error('prefecture is undefined');
     }
+    if (!prop.birthday) {
+      throw new Error('birthday is undefined');
+    }
+
     console.log(city, 'city');
     console.log(prefecture, 'prefecture');
 
+    const inputDate = `${new Date(prop.birthday).getFullYear()}-${
+      new Date(prop.birthday).getMonth() + 1
+    }-${new Date(prop.birthday).getDate()}`;
+
+    console.log(inputDate, 'inputDate');
+
     // APIに送信
+
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+    if (!baseUrl) {
+      console.log('baseUrl is undefined');
+      return;
+    }
+
+    // APIにリクエスト
+    const options = {
+      method: 'PUT',
+    };
+
+    const requestUrl =
+      baseUrl +
+      '/user' +
+      `?idToken=id_token&gender=${jender.id}&city=${city.name}&prefecture=${prefecture.name}&birth=${inputDate}`;
+
+    console.log(requestUrl, 'requestUrl');
+
+    const res = await fetch(requestUrl, options);
+    const resData = await res.json();
+    console.log(resData);
+
+    // /app/homeに遷移
+    navigate('/app/home');
   };
 
   return (
@@ -104,7 +139,7 @@ export const Confirm = (prop: propsType) => {
           <Box sx={{ display: 'flex' }} alignItems={'flex-end'} pb={2}>
             <Typography variant="subtitle1">性別：</Typography>
             <Typography variant="subtitle1" fontWeight={'bold'}>
-              {jender}
+              {jender.value}
             </Typography>
           </Box>
         </Box>
