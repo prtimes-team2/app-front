@@ -136,26 +136,36 @@ export const AuthProvider = ({ children }: Props) => {
       setReports(transformToArr(reports));
 
       const questions = resData['Questions'] as { [key: string]: Question };
+      // if (!questions) {
+      //   throw new Error('questions is undefined');
+      // }
       if (!questions) {
-        throw new Error('questions is undefined');
+        setQuestions([]);
+      } else {
+        setQuestions(transformToArr(questions));
       }
-      setQuestions(transformToArr(questions));
 
       const favorites = resData['Favorites'] as { [key: string]: Favorite };
+      // if (!favorites) {
+      //   console.log(resData, 'resData');
+      //   console.log(resData['Favorite'], 'Favorite');
+      //   throw new Error('favorites is undefined');
+      // }
       if (!favorites) {
-        console.log(resData, 'resData');
-        console.log(resData['Favorite'], 'Favorite');
-        throw new Error('favorites is undefined');
+        setFavorites([]);
+      } else {
+        setFavorites(transformToArr(favorites));
       }
-
-      setFavorites(transformToArr(favorites));
 
       const coinLogs = resData['CoinLogs'] as { [key: string]: CoinLog };
+      // if (!coinLogs) {
+      //   throw new Error('coinLogs is undefined');
+      // }
       if (!coinLogs) {
-        throw new Error('coinLogs is undefined');
+        setCoinLogs([]);
+      } else {
+        setCoinLogs(transformToArr(coinLogs));
       }
-
-      setCoinLogs(transformToArr(coinLogs));
     } catch (err) {
       // APIのリクエストが失敗した時は、ログイン画面に戻す
       console.log('getUser error');
