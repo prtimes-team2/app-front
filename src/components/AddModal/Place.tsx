@@ -1,3 +1,4 @@
+import liff from '@line/liff';
 import SendIcon from '@mui/icons-material/Send';
 import { Box, Button, Container, Stack, TextField } from '@mui/material';
 import { useCallback, useState } from 'react';
@@ -48,11 +49,38 @@ export const Place = () => {
     console.log(`Sybmit Title: ${title}`);
     console.log(`Sybmit SubTitle: ${subTitle}`);
 
+    let uploadImageUrl = '';
     if (imageData) {
       // 画像データをアップロードしてURLに変更する
       const url = await uploadImage(imageData, 'test');
-      console.log(url);
+      uploadImageUrl = url;
     }
+
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+    if (!baseUrl) {
+      console.log('baseUrl is undefined');
+      return;
+    }
+
+    // APIにリクエスト
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idToken: liff.getIDToken() ?? 'id_token',
+        title,
+        content: subTitle,
+        // todo - Registerが実装後、ユーザーの地元情報を取得する
+        address: '静岡県静岡市',
+        lat: 34.976944,
+        lng: 38.383056,
+        urls: [uploadImageUrl ?? null],
+      }),
+    };
+
+    const res = await fetch(baseUrl + '/report', options);
+    const resData = await res.json();
+    console.log(resData);
   };
 
   return (
