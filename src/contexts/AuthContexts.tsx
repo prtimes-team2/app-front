@@ -134,7 +134,7 @@ export const AuthProvider = ({ children }: Props) => {
       console.log('---------------- resData ------------');
 
       const userData = resData['User'] as User;
-      setUser({ ...userData, prefecture: '22', city: '22210' });
+      setUser(userData);
 
       console.log('---------------- userData ------------');
       console.log(userData);
