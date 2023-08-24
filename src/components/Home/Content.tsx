@@ -57,7 +57,7 @@ export const Content = ({ value }: ContentProps) => {
             <MainCard
               key={report.id}
               postKey={report.id}
-              image="https://source.unsplash.com/random"
+              image={report.imageUrls[0]}
               title={report.title}
               detail={report.content}
               address={report.address}

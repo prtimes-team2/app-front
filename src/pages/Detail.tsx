@@ -18,6 +18,7 @@ const Detail = () => {
   const { profile, reports } = useContext(AuthContext);
   const report = reports.find((report) => report.id === reportId);
   const postDay = report?.created_at.split('T')[0];
+  const imageUrl = report?.imageUrls[0];
 
   const handleDelete = async () => {
     if (window.confirm('削除しますか？')) {
@@ -129,11 +130,21 @@ const Detail = () => {
       </Box>
       <Box display="flex" justifyContent="center">
         <Paper elevation={3} style={{ width: '80%', overflow: 'hidden' }}>
-          {/* TODO: 画像を表示する */}
-          <img
-            src="https://source.unsplash.com/random"
-            style={{ width: '100%', display: 'block' }}
-          />
+          {report ? (
+            <img
+              src={imageUrl ? imageUrl : 'https://source.unsplash.com/random'}
+              style={{ width: '100%', display: 'block' }}
+            />
+          ) : (
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              height={'30vh'}
+              animation="wave"
+            >
+              <Typography>.</Typography>
+            </Skeleton>
+          )}
         </Paper>
       </Box>
       <Box

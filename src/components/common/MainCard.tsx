@@ -7,6 +7,7 @@ import {
   CardContent,
   CardMedia,
   IconButton,
+  Skeleton,
   Typography,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -109,17 +110,30 @@ export const MainCard = (props: propsType) => {
             navigate(`/app/detail/${props.postKey}`);
           }}
         >
-          <CardMedia
-            image={props.image}
-            title="画像"
-            sx={{
-              height: 75,
-              width: 75,
-              minWidth: 75,
-              objectFit: 'cover',
-              padding: 2,
-            }}
-          />
+          {props ? (
+            <CardMedia
+              image={
+                props.image ? props.image : 'https://source.unsplash.com/random'
+              }
+              title="画像"
+              sx={{
+                height: 75,
+                width: 75,
+                minWidth: 75,
+                objectFit: 'cover',
+                padding: 2,
+              }}
+            />
+          ) : (
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              height={'30vh'}
+              animation="wave"
+            >
+              <Typography>.</Typography>
+            </Skeleton>
+          )}
           <Box sx={{ flex: '1' }} position={'relative'} overflow={'hidden'}>
             <CardContent>
               <Typography
