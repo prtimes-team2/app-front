@@ -130,8 +130,17 @@ export const AuthProvider = ({ children }: Props) => {
       };
 
       const res = await fetch(baseUrl + '/user/login', options);
-      const resData = await res.json();
+      console.log('---------------- res ------------');
+      console.log(res);
+      console.log('---------------- res ------------');
 
+      if (!res.ok) {
+        console.log('res is not ok');
+        const text = await res.text();
+        console.log(text);
+        return;
+      }
+      const resData = await res.json();
       console.log('---------------- resData ------------');
       console.log(resData);
       console.log('---------------- resData ------------');
