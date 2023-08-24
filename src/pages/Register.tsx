@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 
-import { Confilm } from '../components/Register/Confilm';
+import { Confirm } from '../components/Register/Confirm';
 
 import {
   Avatar,
@@ -9,6 +9,7 @@ import {
   Button,
   Container,
   FormControl,
+  InputLabel,
   MenuItem,
   Modal,
   Select,
@@ -19,17 +20,22 @@ import {
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import 'dayjs/locale/ja';
+import LoginIcon from '@mui/icons-material/Login';
 
 import { japan } from '../lib/japan';
 import { getCity } from '../lib/getAddress';
 import { jenderArr } from '../lib/jender';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../contexts/AuthContexts';
 
 export default function SignUp() {
-  const [prefecture, setPrefecture] = React.useState<string>('');
-  const [city, setCity] = React.useState('');
-  const [birthday, setBirthDay] = React.useState<Date | null>(null);
-  const [jender, setJender] = React.useState(0);
-  const [open, setOpen] = React.useState(false);
+  const [prefecture, setPrefecture] = useState<string>('');
+  const [city, setCity] = useState('');
+  const [birthday, setBirthDay] = useState<Date | null>(null);
+  const [jender, setJender] = useState(2);
+  const [open, setOpen] = useState(false);
+  const { profile } = useContext(AuthContext);
 
   const prefectureLs = japan.map((value) => {
     return (
@@ -73,49 +79,88 @@ export default function SignUp() {
           alignItems: 'center',
         }}
       >
-        <Typography component="h1" variant="h5">
-          ようこそ！
+        <Typography
+          component="h1"
+          variant="h5"
+          fontWeight={'bold'}
+          pb={1}
+          letterSpacing={2}
+        >
+          じもとコイン
         </Typography>
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}></Avatar>
+        <Typography component="h2" variant="h5" pb={2}>
+          へようこそ！
+        </Typography>
+        <Avatar
+          alt={profile ? profile.displayName : 'no profile'}
+          src={profile && profile.pictureUrl ? profile.pictureUrl : ''}
+          sx={{ width: 56, height: 56, marginRight: 2 }}
+        />
 
         <Box component="form" noValidate sx={{ mt: 3 }}>
           <Stack spacing={2}>
-            <FormControl>
+            <FormControl
+              sx={{
+                width: '100%',
+                minWidth: 120,
+              }}
+            >
+              <InputLabel id="register-prefecture-label">都道府県</InputLabel>
               <Select
+                labelId="register-prefecture-label"
                 id="register-prefecture"
                 value={prefecture}
                 label="都道府県"
                 onChange={({ target }) => {
                   setPrefecture(target.value);
+                  setCity('');
                 }}
               >
                 {prefectureLs}
               </Select>
             </FormControl>
-
-            <FormControl>
-              <Select
-                id="regitster-city"
-                value={city}
-                label="市区町村"
-                onChange={({ target }) => {
-                  setCity(target.value);
-                }}
-              >
-                {cityLs}
-              </Select>
-            </FormControl>
-
+            {prefecture !== '' ? (
+              <FormControl>
+                <InputLabel id="register-city-label">市区町村</InputLabel>
+                <Select
+                  id="regitster-city"
+                  labelId="register-city-label"
+                  value={city}
+                  onChange={({ target }) => {
+                    setCity(target.value);
+                  }}
+                >
+                  {cityLs}
+                </Select>
+              </FormControl>
+            ) : (
+              <FormControl disabled>
+                <InputLabel id="register-city-label">市区町村</InputLabel>
+                <Select
+                  id="regitster-city"
+                  labelId="register-city-label"
+                  value={city}
+                  onChange={({ target }) => {
+                    setCity(target.value);
+                  }}
+                >
+                  {cityLs}
+                </Select>
+              </FormControl>
+            )}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
+                label="生年月日"
+                format="YYYY/MM/DD"
                 value={birthday}
                 onChange={(newValue) => setBirthDay(newValue)}
               />
             </LocalizationProvider>
-
             <FormControl>
+              <InputLabel id="jender-label">性別</InputLabel>
               <Select
                 id="jender"
+                labelId="jender-label"
                 value={jender}
                 label="性別"
                 onChange={({ target }) => {
@@ -126,10 +171,46 @@ export default function SignUp() {
               </Select>
             </FormControl>
           </Stack>
-
-          <Button fullWidth sx={{ mt: 3 }} onClick={handleOpen}>
-            登録
-          </Button>
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            {prefecture !== '' &&
+            city !== '' &&
+            birthday !== null &&
+            jender !== null ? (
+              <Button
+                variant="contained"
+                startIcon={<LoginIcon />}
+                onClick={handleOpen}
+                sx={{
+                  borderRadius: 50,
+                  paddingX: 3,
+                  paddingY: 1,
+                }}
+              >
+                新規登録
+              </Button>
+            ) : (
+              <Button
+                disabled
+                variant="contained"
+                startIcon={<LoginIcon />}
+                onClick={handleOpen}
+                sx={{
+                  borderRadius: 50,
+                  paddingX: 3,
+                  paddingY: 1,
+                }}
+              >
+                新規登録
+              </Button>
+            )}
+          </Box>
 
           <Modal
             open={open}
@@ -137,7 +218,7 @@ export default function SignUp() {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <Confilm
+            <Confirm
               prefecture={prefecture}
               city={city}
               birthday={birthday}

@@ -14,4 +14,5 @@ export interface Report {
   };
   address: string;
   author: string;
+  created_at: string;
 }

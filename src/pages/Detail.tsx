@@ -15,6 +15,8 @@ const Detail = () => {
   const pathname = useLocation().pathname;
   const reportId = Number(pathname.split('/')[3]);
   const { profile, reports } = useContext(AuthContext);
+  const report = reports.find((report) => report.id === reportId);
+  const postDay = report?.created_at.split('T')[0];
   return (
     <>
       <Box padding={2} display={'flex'}>
@@ -44,7 +46,7 @@ const Detail = () => {
           sx={{ width: 28, height: 28, marginRight: 1 }}
         />
         <Box sx={{ width: '100%' }}>
-          {reports[reportId] ? (
+          {report ? (
             <Typography
               variant="subtitle1"
               component="div"
@@ -69,14 +71,14 @@ const Detail = () => {
       >
         <Box>
           <Box sx={{ width: '100%' }}>
-            {reports[reportId] ? (
+            {report ? (
               <Typography
                 variant="h6"
                 fontWeight="bold"
                 mt={1}
                 textAlign={'center'}
               >
-                {reports[reportId].title}
+                {report.title}
               </Typography>
             ) : (
               <Skeleton width="10vh" animation="wave">
@@ -104,13 +106,13 @@ const Detail = () => {
       >
         <Box>
           <Box sx={{ width: '100%' }}>
-            {reports[reportId] ? (
+            {report ? (
               <Typography
                 variant="subtitle1"
                 fontWeight="bold"
                 textAlign={'center'}
               >
-                {reports[reportId].content}
+                {report.content}
               </Typography>
             ) : (
               <Skeleton width="10vh" animation="wave">
@@ -123,9 +125,9 @@ const Detail = () => {
       <Box paddingTop={2} paddingLeft={5} display={'flex'}>
         <LocationOn sx={{ marginRight: 1 }} />
         <Box sx={{ width: '100%' }}>
-          {reports[reportId] ? (
+          {report ? (
             <Typography variant="body2" display={'flex'} alignItems={'center'}>
-              {reports[reportId].address}
+              {report.address}
             </Typography>
           ) : (
             <Skeleton width="10vh" animation="wave">
@@ -140,7 +142,13 @@ const Detail = () => {
         display={'flex-end'}
         textAlign={'right'}
       >
-        <Typography variant="body2">2023年8月24日</Typography>
+        {report ? (
+          <Typography variant="body2">{postDay}</Typography>
+        ) : (
+          <Skeleton animation="wave">
+            <Typography variant="body2">.</Typography>
+          </Skeleton>
+        )}
       </Box>
     </>
   );
