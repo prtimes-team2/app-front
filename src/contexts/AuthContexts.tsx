@@ -177,8 +177,6 @@ export const AuthProvider = ({ children }: Props) => {
       console.log(uniqueReports);
       console.log('---------------- allReports ------------');
 
-      // reportがある時は配列に変換してsetする
-      // reportがない時は空の配列をsetする
       if (allReports) {
         setReports(uniqueReports);
       } else {
@@ -199,23 +197,19 @@ export const AuthProvider = ({ children }: Props) => {
       console.log(questions);
       console.log('---------------- questions ------------');
 
-      // questionがある時は配列に変換してsetする
-      // questionがない時は空の配列をsetする
       if (questions) {
         setQuestions(transformToArr(questions));
       } else {
         setQuestions([]);
       }
 
-      const coinLogs = resData['CoinLogs'] as { [key: string]: CoinLog };
+      const coinLogs = resData['Coinlogs'] as CoinLog[];
       console.log('---------------- coinLogs ------------');
       console.log(coinLogs);
       console.log('---------------- coinLogs ------------');
 
-      // coinLogがある時は配列に変換してsetする
-      // coinLogがない時は空の配列をsetする
       if (coinLogs) {
-        setCoinLogs(transformToArr(coinLogs));
+        setCoinLogs(coinLogs);
       } else {
         setCoinLogs([]);
       }
