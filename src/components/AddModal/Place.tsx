@@ -1,13 +1,26 @@
-import { Button, Stack, TextField } from '@mui/material';
-import { useCallback, useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
+import { Box, Button, Container, Stack, TextField } from '@mui/material';
+import { useCallback, useState } from 'react';
+import { ImageInput } from './ImageInput';
 
+import { uploadImage } from '../../useFirebaseClient';
+
+// 画像アップロード
 export const Place = () => {
   const [title, setTitle] = useState('');
   const [subTitle, setSubTitle] = useState('');
   const [hasTitleError, setHasTitleError] = useState(false);
   const [hasSubTitleError, setHasSubTitleError] = useState(false);
+  const [imageData, setImageData] = useState<File>();
+  const [localImage, setLocalImage] = useState<string>();
 
+  function handleFileChange(id: number) {
+    return (file: File) => {
+      console.log('変更されました', id);
+      setImageData(file);
+      setLocalImage(URL.createObjectURL(file));
+    };
+  }
   const inputTitle = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const inputValue = event.target.value;
@@ -29,11 +42,17 @@ export const Place = () => {
     [setSubTitle, setHasSubTitleError]
   );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     console.log(`Sybmit Title: ${title}`);
     console.log(`Sybmit SubTitle: ${subTitle}`);
+
+    if (imageData) {
+      // 画像データをアップロードしてURLに変更する
+      const url = await uploadImage(imageData, 'test');
+      console.log(url);
+    }
   };
 
   return (
@@ -70,6 +89,13 @@ export const Place = () => {
         onChange={inputSubTitle}
         helperText={hasSubTitleError ? 'サブタイトルを入力してください。' : ''}
       />
+      <Container>
+        <Box display="flex" justifyContent="space-between">
+          <ImageInput url={localImage ?? ''} onChange={handleFileChange(1)} />
+          {/* <ImageInput url={localImageArray[1]} onChange={handleFileChange(2)} id={2}/>
+          <ImageInput url={localImageArray[2]} onChange={handleFileChange(3)} id={3}/> */}
+        </Box>
+      </Container>
       <Button
         variant="outlined"
         endIcon={<SendIcon />}
