@@ -109,8 +109,14 @@ export const AddModal = (prop: Props) => {
                 {age === 'place' ? (
                   <Place
                     handleResult={(value, amount) => {
+                      //setIsResult(true)を入れて2秒後にsetIsResult(false)と画面を閉じる
                       setIsResult(value);
                       setAmount(amount);
+                      setTimeout(() => {
+                        setIsResult(false);
+                        setAmount(0);
+                        prop.handleClose();
+                      }, 2000);
                     }}
                   />
                 ) : age === 'question' ? (
