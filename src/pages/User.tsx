@@ -1,9 +1,17 @@
 import { Settings } from '@mui/icons-material';
-import { Avatar, Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Container,
+  IconButton,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material';
 import React, { useContext, useEffect } from 'react';
 import CountUp from 'react-countup';
 import { Link } from 'react-router-dom';
-import { TestCard } from '../components/common/TestCard';
+import { MainCard } from '../components/common/MainCard';
 import { AuthContext } from '../contexts/AuthContexts';
 
 interface TabPanelProps {
@@ -46,7 +54,11 @@ const Profile = () => {
   };
   const [totalCoin, setTotalCoin] = React.useState(0);
 
-  const { profile, coinLogs } = useContext(AuthContext);
+  const { profile, coinLogs, reports, favorites } = useContext(AuthContext);
+
+  const favoriteIds = favorites
+    .filter((favorite) => favorite.isFavorite === true)
+    .map((favorite) => favorite.reportId);
 
   useEffect(() => {
     let total = 0;
@@ -113,10 +125,37 @@ const Profile = () => {
         </Box>
       </header>
       <CustomTabPanel value={value} index={0}>
-        <TestCard />
+        {/* 自分の投稿が表示される */}
+        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+          {reports
+            .filter((report) => report.author === profile?.userId)
+            .map((report) => (
+              <MainCard
+                key={report.id}
+                image="https://source.unsplash.com/random"
+                title={report.title}
+                detail={report.content}
+                // 一旦50%の確率でtrueにする
+                isFavorite={Math.random() < 0.5}
+              />
+            ))}
+        </Container>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <TestCard />
+        {/* お気に入りの投稿が表示される reportにあって、favoritesのidのものだけを表示したい */}
+        <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
+          {reports
+            .filter((report) => favoriteIds.includes(report.id))
+            .map((report) => (
+              <MainCard
+                key={report.id}
+                image="https://source.unsplash.com/random"
+                title={report.title}
+                detail={report.content}
+                isFavorite={true}
+              />
+            ))}
+        </Container>
       </CustomTabPanel>
     </>
   );
