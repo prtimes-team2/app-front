@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { Box, Button, Card, Typography } from '@mui/material';
 
-import { japan } from '../../lib/japan';
 import { getCity } from '../../lib/getAddress';
+import { japan } from '../../lib/japan';
 import { jenderArr } from '../../lib/jender';
 
 interface propsType {
@@ -30,7 +30,9 @@ export const Confirm = (prop: propsType) => {
 
   const cityArr = useQuery(['data'], () => getCity(prop.prefecture));
 
-  let city;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  let city: { id: string; name: string } | undefined;
   if (cityArr && cityArr.data && cityArr.data.data) {
     city = cityArr.data.data.find(
       (obj: { id: string }) => obj.id === prop.city
@@ -39,12 +41,29 @@ export const Confirm = (prop: propsType) => {
 
   const jender = jenderArr[prop.jender].value;
 
-  let japaneseDate;
+  let japaneseDate = '';
   if (prop.birthday) {
     japaneseDate = `${new Date(prop.birthday).getFullYear()}年${
       new Date(prop.birthday).getMonth() + 1
     }月${new Date(prop.birthday).getDate()}日`;
   }
+
+  const submit = () => {
+    console.log('submit');
+    console.log(prop.birthday, 'prop.birthday');
+    console.log(japaneseDate, 'japaneseDate');
+    console.log(jender, 'jender');
+    if (!city) {
+      throw new Error('city is undefined');
+    }
+    if (!prefecture) {
+      throw new Error('prefecture is undefined');
+    }
+    console.log(city, 'city');
+    console.log(prefecture, 'prefecture');
+
+    // APIに送信
+  };
 
   return (
     <Card>
@@ -103,6 +122,7 @@ export const Confirm = (prop: propsType) => {
               paddingX: 3,
               paddingY: 1,
             }}
+            onClick={submit}
           >
             <Typography variant="subtitle1" fontWeight={'bold'}>
               登録する
