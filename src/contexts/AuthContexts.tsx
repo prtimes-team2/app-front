@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }: Props) => {
   const [hasHomeTown, setHasHomeTown] = useState<boolean>(() => false);
   const [user, setUser] = useState<User | null>(() => null);
   const [reports, setReports] = useState<Report[]>(() => []);
-  const [questions /* setQuestions*/] = useState<Question[]>(() => []);
+  const [questions, setQuestions] = useState<Question[]>(() => []);
   const [selfQuestions, setSelfQuestions] = useState<SelfQuestion[]>(() => []);
   const [favoriteIds, setFavoriteIds] = useState<number[]>(() => []);
   const [coinLogs, setCoinLogs] = useState<CoinLog[]>(() => []);
@@ -217,6 +217,8 @@ export const AuthProvider = ({ children }: Props) => {
 
       // 自分の質問を取得する
       await getSelfQuestions(idToken);
+      // 質問を取得する
+      await getQuestion(idToken);
     } catch (err) {
       // APIのリクエストが失敗した時は、ログイン画面に戻す
       console.log('getUser error');
@@ -242,6 +244,53 @@ export const AuthProvider = ({ children }: Props) => {
       }
     }
     setFavoriteIds(newFavoriteIds);
+  };
+
+  const getQuestion = async (idToken: string) => {
+    console.log(user?.prefecture);
+    console.log(user?.city);
+    if (user?.prefecture == null || user?.city == null) {
+      console.log('prefecture', user?.prefecture);
+      console.log('city', user?.city);
+      console.log('prefecture or city is undefined');
+      return;
+    }
+
+    // 質問を取得する
+    // APIにリクエスト
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+    if (!baseUrl) {
+      console.log('baseUrl is undefined');
+      return;
+    }
+
+    // /questionにリクエスト
+    const options = {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    };
+
+    // /questionにリクエスト
+    const res = await fetch(
+      baseUrl +
+        '/question' +
+        `idToken=${idToken ?? 'id_token'}&prefecture=${user.prefecture}&city=${
+          user.city
+        }`,
+      options
+    );
+    if (!res.ok) {
+      console.log('res is not ok');
+      const text = await res.text();
+      console.log(text);
+      return;
+    }
+
+    const resData = (await res.json()) as Question[];
+    console.log(' ---------------- question ----------------');
+    console.log(resData);
+    console.log(' ---------------- question ----------------');
+    setQuestions(resData);
   };
 
   const getSelfQuestions = async (idToken: string) => {
