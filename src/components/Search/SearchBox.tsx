@@ -1,4 +1,4 @@
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+// import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import CssBaseline from '@mui/material/CssBaseline';
 import FormControl from '@mui/material/FormControl';
@@ -21,10 +21,11 @@ import {
 } from '../../lib/prtimesPrefecture';
 
 export const SearchBox = () => {
-  const { reports } = useContext(AuthContext);
+  const { reports, user } = useContext(AuthContext);
 
   // 検索キーワード
   const [keyword, setKeyword] = useState<string | null>(null);
+  const [chosenTag, setChosenTag] = useState<string | null>(null);
   // 検索結果
   const [searchResultContent, setSearchResultContent] = useState<Report[]>([]);
 
@@ -55,15 +56,30 @@ export const SearchBox = () => {
       // 検索キーワードがreport.title or report.contentに含まれてたらresultに入れる
       reports.forEach((report) => {
         if (
-          report.title.includes(query as string) ||
-          report.content.includes(query as string)
+          (report.title && report.title.includes(query as string)) ||
+          (report.content && report.content.includes(query as string))
         ) {
           result.push(report);
         }
       });
     }
+    // tagでFilterした配列
+    const filteredTagArray = [] as Report[];
+
+    console.log(chosenTag, 'chosenTag');
+    // タグが指定されている場合は、タグで絞り込む
+    if (chosenTag) {
+      result.forEach((report) => {
+        if (report.tags[chosenTag]) {
+          filteredTagArray.push(report);
+        }
+      });
+    } else {
+      filteredTagArray.push(...result);
+    }
+
     // 検索に利用する都道府県を決める
-    const name = '静岡県';
+    const name = user?.prefecture ?? '新潟県';
     // prtimesPrefectureからprefectureのidを取得
     const foundPrefecture = prTimesPrefecture.find(
       (prefecture) => prefecture.name === name
@@ -74,9 +90,9 @@ export const SearchBox = () => {
 
     // resultの中にpressArrayの要素をランダムな順番で入れる
     pressArray.forEach((press) => {
-      const randomIndex = Math.floor(Math.random() * result.length);
+      const randomIndex = Math.floor(Math.random() * filteredTagArray.length);
       // pressの値を使ってreport型に変換していく
-      result.splice(randomIndex, 0, {
+      filteredTagArray.splice(randomIndex, 0, {
         id: press.release_id,
         address: '',
         //会社名
@@ -94,8 +110,14 @@ export const SearchBox = () => {
       });
     });
 
+    //重複を削除
+    const uniqueArray = filteredTagArray.filter(
+      (item, index) =>
+        filteredTagArray.findIndex((item2) => item.id === item2.id) === index
+    );
+
     // idを使ってその都道府県の投稿を取得する
-    setSearchResultContent(result);
+    setSearchResultContent(uniqueArray);
   };
 
   useEffect(() => {
@@ -171,6 +193,10 @@ export const SearchBox = () => {
             {tags.map((tag) => (
               <Grid item xs={3} key={tag}>
                 <Container
+                  onClick={() => {
+                    setChosenTag(tag);
+                    getData();
+                  }}
                   sx={{
                     display: 'flex',
                     flexDirection: 'row',
@@ -178,8 +204,8 @@ export const SearchBox = () => {
                     alignItems: 'center',
                     borderRadius: '90px',
                     border: '1px solid #FFE792',
-                    backgroundColor: '#FFF',
                     height: '30px',
+                    backgroundColor: chosenTag === tag ? '#FFE792' : 'white',
                   }}
                 >
                   <Typography
@@ -230,7 +256,7 @@ export const SearchBox = () => {
                 justifyContent: 'flex-end',
               }}
             >
-              <FilterAltIcon />
+              {/* <FilterAltIcon />
               <Typography
                 sx={{
                   fontSize: '12px',
@@ -240,7 +266,7 @@ export const SearchBox = () => {
                 }}
               >
                 詳しく絞りこみ
-              </Typography>
+              </Typography> */}
             </Container>
           </Container>
         </Container>
