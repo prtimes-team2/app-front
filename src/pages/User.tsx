@@ -145,7 +145,10 @@ const Profile = () => {
         {/* 自分の投稿した質問を表示したい */}
         <Container maxWidth="sm" sx={{ paddingBottom: '35px' }}>
           {selfQuestions.map((selfQuestion) => (
-            <div key={selfQuestion.question_id}>私の質問</div>
+            <div key={selfQuestion.question_id}>
+              {selfQuestion.content}
+              {selfQuestion.created_at}
+            </div>
           ))}
         </Container>
       </CustomTabPanel>

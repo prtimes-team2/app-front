@@ -218,7 +218,7 @@ export const AuthProvider = ({ children }: Props) => {
       // 自分の質問を取得する
       await getSelfQuestions(idToken);
       // 質問を取得する
-      await getQuestion(idToken);
+      await getQuestion(idToken, userData);
     } catch (err) {
       // APIのリクエストが失敗した時は、ログイン画面に戻す
       console.log('getUser error');
@@ -246,12 +246,10 @@ export const AuthProvider = ({ children }: Props) => {
     setFavoriteIds(newFavoriteIds);
   };
 
-  const getQuestion = async (idToken: string) => {
-    console.log(user?.prefecture);
-    console.log(user?.city);
-    if (user?.prefecture == null || user?.city == null) {
-      console.log('prefecture', user?.prefecture);
-      console.log('city', user?.city);
+  const getQuestion = async (idToken: string, userData: User) => {
+    if (userData.prefecture == null || userData.city == null) {
+      console.log('prefecture', userData.prefecture);
+      console.log('city', userData.city);
       console.log('prefecture or city is undefined');
       return;
     }
@@ -274,15 +272,19 @@ export const AuthProvider = ({ children }: Props) => {
     const res = await fetch(
       baseUrl +
         '/question' +
-        `idToken=${idToken ?? 'id_token'}&prefecture=${user.prefecture}&city=${
-          user.city
-        }`,
+        `?idToken=${idToken ?? 'id_token'}&prefecture=${
+          userData.prefecture
+        }&city=${userData.city}`,
       options
     );
+    console.log(userData.prefecture);
+    console.log(userData.city);
+
     if (!res.ok) {
       console.log('res is not ok');
       const text = await res.text();
       console.log(text);
+      setQuestions([]);
       return;
     }
 
