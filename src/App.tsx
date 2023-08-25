@@ -1,13 +1,18 @@
 import { useState } from 'react';
-import { Main } from './components/Main';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { ThemeProvider } from '@mui/material';
+
+import { theme } from './theme';
+import { Main } from './components/Main';
 
 const App = () => {
   const [cliant] = useState(() => new QueryClient());
   return (
-    <QueryClientProvider client={cliant}>
-      <Main />
-    </QueryClientProvider>
+    <ThemeProvider theme={theme}>
+      <QueryClientProvider client={cliant}>
+        <Main />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 
