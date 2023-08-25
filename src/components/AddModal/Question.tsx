@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Filter } from '../common/Filter';
+import liff from '@line/liff';
 
-import { Box, Stack, Typography, TextField, Button } from '@mui/material';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 
 export const Question = () => {
   const [reward, setReward] = React.useState<number>(0);
@@ -32,6 +33,42 @@ export const Question = () => {
     },
     [setBodyText, setHasBodyTextError]
   );
+
+  const handleSubmit = async () => {
+    console.log('submit');
+    console.log(address);
+    console.log(reward);
+    console.log(bodyText);
+
+    //  /questionにpostする
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+    if (!baseUrl) {
+      console.log('baseUrl is undefined');
+      return;
+    }
+
+    // addressは滋賀県大津市のように都道府県と市区町村が入っているaddressを都道府県のいずれかでsplitしてprefectureとcityに分ける
+    const [prefecture, city] = address.split(/(都|道|府|県)/);
+    console.log(prefecture);
+    console.log(city);
+
+    // APIにリクエスト
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idToken: liff.getIDToken() ?? 'id_token',
+        prefecture,
+        city,
+        reward,
+        content: bodyText,
+      }),
+    };
+
+    const res = await fetch(baseUrl + '/question', options);
+    const resData = (await res.json()) as { amount: number };
+    console.log(resData);
+  };
 
   return (
     <Box>
@@ -76,7 +113,7 @@ export const Question = () => {
             </Typography>
           </Box>
           <Box>
-            <Button>質問する</Button>
+            <Button onClick={handleSubmit}>質問する</Button>
           </Box>
         </Stack>
       </Stack>
