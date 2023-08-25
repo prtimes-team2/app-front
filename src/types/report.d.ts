@@ -6,12 +6,8 @@ export interface Report {
   title: string;
   lat: number;
   lng: number;
-  tags: {
-    [key: string]: string;
-  };
-  imageUrls: {
-    [key: string]: string;
-  };
+  tags: string[];
+  imageUrls: string[];
   address: string;
   author: string;
   created_at: string;

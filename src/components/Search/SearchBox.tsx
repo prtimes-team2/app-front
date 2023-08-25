@@ -70,7 +70,7 @@ export const SearchBox = () => {
     // タグが指定されている場合は、タグで絞り込む
     if (chosenTag) {
       result.forEach((report) => {
-        if (report.tags[chosenTag]) {
+        if (report.tags) {
           filteredTagArray.push(report);
         }
       });
@@ -103,8 +103,8 @@ export const SearchBox = () => {
         title: press.title,
         lat: 0,
         lng: 0,
-        tags: {},
-        imageUrls: {},
+        tags: [],
+        imageUrls: [],
         created_at: '',
         user_id: press.url,
       });
