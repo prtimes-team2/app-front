@@ -1,8 +1,8 @@
-import { Box, Button, Card, Typography } from '@mui/material';
 import liff from '@line/liff';
+import { Box, Button, Card, Typography } from '@mui/material';
 
-import { jenderArr } from '../../lib/jender';
 import { useNavigate } from 'react-router-dom';
+import { jenderArr } from '../../lib/jender';
 
 interface propsType {
   prefecture: string;
@@ -76,8 +76,8 @@ export const Confirm = (prop: propsType) => {
       baseUrl +
       '/user' +
       `?idToken=${liff.getIDToken() ?? 'id_token'}&gender=${jender.id}&city=${
-        city.name
-      }&prefecture=${prefecture.name}&birth=${inputDate}`;
+        prop.city
+      }&prefecture=${prop.prefecture}&birth=${inputDate}`;
 
     console.log(requestUrl, 'requestUrl');
 
