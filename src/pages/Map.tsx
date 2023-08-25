@@ -10,6 +10,7 @@ import { AddFab } from '../components/common/AddFab';
 import Pin from '../components/Map/pin';
 
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
+import { useNavigate } from 'react-router-dom';
 
 import { AuthContext } from '../contexts/AuthContexts';
 
@@ -17,6 +18,7 @@ import { Loading } from '../components/Loading';
 import { Report } from '../types/report';
 
 const AppMap = () => {
+  const navigate = useNavigate();
   const { reports } = useContext(AuthContext);
   const map = useRef(null);
   const geoControlRef = useRef();
@@ -125,14 +127,15 @@ const AppMap = () => {
               >
                 <div>
                   {popupInfo.id}, {popupInfo.content} |{' '}
-                  <a
-                    target="_new"
-                    href={`http://en.wikipedia.org/w/index.php?title=Special:Search&search=${popupInfo.id}, ${popupInfo.id}`}
+                  <button
+                    onClick={() => navigate(`/app/detail/${popupInfo.id}`)}
                   >
-                    Wikipedia
-                  </a>
+                    詳細を見る
+                  </button>
                 </div>
-                {/* <img width="100%" src={popupInfo.} /> */}
+                {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
+                <img width="100%" src={'https://source.unsplash.com/random'} />
               </Popup>
             )}
           </Map>
