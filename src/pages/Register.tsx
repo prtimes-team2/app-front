@@ -53,7 +53,7 @@ export default function SignUp() {
   if (citiesArr && citiesArr.data) {
     cityLs = citiesArr.data.map((value: { id: string; name: string }) => {
       return (
-        <MenuItem key={value.id} value={value.id}>
+        <MenuItem key={value.id} value={value.name}>
           {value.name}
         </MenuItem>
       );
