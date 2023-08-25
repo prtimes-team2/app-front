@@ -94,7 +94,7 @@ export const SearchBox = () => {
       // pressの値を使ってreport型に変換していく
       filteredTagArray.splice(randomIndex, 0, {
         id: press.release_id,
-        address: '',
+        address: 'PR TIMES',
         //会社名
         author: press.company_name,
         // subtitle
@@ -106,7 +106,7 @@ export const SearchBox = () => {
         tags: {},
         imageUrls: {},
         created_at: '',
-        user_id: '',
+        user_id: press.url,
       });
     });
 

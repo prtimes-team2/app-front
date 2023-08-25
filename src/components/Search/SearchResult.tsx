@@ -14,11 +14,12 @@ export const SearchResult = (props: { result: Report[] }) => {
             <MainCard
               key={item.id}
               postKey={item.id}
-              image="https://source.unsplash.com/random"
-              title={item.author}
+              image={item.imageUrls[0]}
+              title={item.title}
               address={item.address}
               detail={item.content}
               isFavorite={favoriteIds.includes(item.id)}
+              userId={item.user_id}
             />
           );
         })}

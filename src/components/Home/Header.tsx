@@ -44,8 +44,8 @@ export const Header = () => {
               aria-label="basic tabs example"
               centered
             >
-              <Tab label="最近の投稿" {...a11yProps(0)} />
-              <Tab label="新着質問" {...a11yProps(1)} />
+              <Tab disableRipple label="最近の投稿" {...a11yProps(0)} />
+              <Tab disableRipple label="新着質問" {...a11yProps(1)} />
             </Tabs>
           </Box>
         </Box>
