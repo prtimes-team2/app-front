@@ -1,10 +1,8 @@
-import { Settings } from '@mui/icons-material';
 import {
   Avatar,
   Box,
   Button,
   Container,
-  IconButton,
   Tab,
   Tabs,
   Typography,
@@ -86,9 +84,6 @@ const Profile = () => {
               >
                 {profile ? profile.displayName : 'no profile'}
               </Typography>
-              <IconButton>
-                <Settings />
-              </IconButton>
             </Box>
             <Box
               display={'flex'}
