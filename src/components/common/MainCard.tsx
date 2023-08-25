@@ -205,7 +205,7 @@ export const MainCard = (props: propsType) => {
           alignItems={'center'}
           sx={props.address === undefined ? { color: 'red' } : {}}
         >
-          {props.address === undefined ? 'PR記事' : props.address}
+          {props.address}
         </Typography>
         <Box
           margin={0.2}
