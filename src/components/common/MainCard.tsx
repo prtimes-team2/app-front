@@ -22,6 +22,7 @@ interface propsType {
   detail: string;
   address: string;
   isFavorite: boolean;
+  userId: string;
 }
 
 const FavoriteIconBk = () => {
@@ -91,6 +92,7 @@ export const MainCard = (props: propsType) => {
     const resData = await res.json();
     console.log(resData);
 
+    console.log(props.address);
     // いいねの状態を更新
     setFavorite(newValue, props.postKey);
   };
@@ -119,7 +121,11 @@ export const MainCard = (props: propsType) => {
         <CardActionArea
           sx={{ flex: '1', display: 'flex' }}
           onClick={() => {
-            navigate(`/app/detail/${props.postKey}`);
+            if (props.address === 'PR TIMES') {
+              window.open(`${props.userId}`, '_blank');
+            } else {
+              navigate('/app/detail/' + props.postKey);
+            }
           }}
         >
           {showSkeleton ? (
@@ -127,11 +133,11 @@ export const MainCard = (props: propsType) => {
               variant="rectangular"
               animation="wave"
               sx={{
-                height: 75,
-                width: 75,
-                minWidth: 75,
+                height: 96,
+                width: 96,
+                minWidth: 96,
                 objectFit: 'cover',
-                padding: 2,
+                padding: 1,
               }}
             >
               <Typography>.</Typography>
@@ -143,11 +149,11 @@ export const MainCard = (props: propsType) => {
               }
               title="画像"
               sx={{
-                height: 75,
-                width: 75,
-                minWidth: 75,
+                height: 96,
+                width: 96,
+                minWidth: 96,
                 objectFit: 'cover',
-                padding: 2,
+                padding: 1,
               }}
             />
           )}
@@ -156,7 +162,9 @@ export const MainCard = (props: propsType) => {
               <Typography
                 component="div"
                 variant="h6"
+                width={'100%'}
                 sx={{
+                  whiteSpace: 'nowrap',
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
                 }}
@@ -195,8 +203,9 @@ export const MainCard = (props: propsType) => {
           color="text.secondary"
           display={'flex'}
           alignItems={'center'}
+          sx={props.address === undefined ? { color: 'red' } : {}}
         >
-          {props.address}
+          {props.address === undefined ? 'PR記事' : props.address}
         </Typography>
         <Box
           margin={0.2}

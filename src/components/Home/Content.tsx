@@ -62,6 +62,7 @@ export const Content = ({ value }: ContentProps) => {
               detail={report.content}
               address={report.address}
               isFavorite={favoriteIds.includes(report.id)}
+              userId=""
             />
           ))}
         </Container>
@@ -78,6 +79,7 @@ export const Content = ({ value }: ContentProps) => {
               title={question.content}
               detail={question.city}
               isFavorite={favoriteIds.includes(question.id)}
+              userId=""
             />
           ))}
         </Container>

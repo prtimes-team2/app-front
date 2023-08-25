@@ -115,9 +115,9 @@ const Profile = () => {
               aria-label="basic tabs example"
               centered
             >
-              <Tab label="投稿" {...a11yProps(0)} />
-              <Tab label="質問" {...a11yProps(1)} />
-              <Tab label="お気に入り" {...a11yProps(2)} />
+              <Tab disableRipple label="投稿" {...a11yProps(0)} />
+              <Tab disableRipple label="質問" {...a11yProps(1)} />
+              <Tab disableRipple label="お気に入り" {...a11yProps(2)} />
             </Tabs>
           </Box>
         </Box>
@@ -136,6 +136,7 @@ const Profile = () => {
                 detail={report.content}
                 address={report.address}
                 isFavorite={favoriteIds.includes(report.id)}
+                userId=""
               />
             ))}
         </Container>
@@ -162,6 +163,7 @@ const Profile = () => {
                 detail={report.content}
                 address={report.address}
                 isFavorite={true}
+                userId=""
               />
             ))}
         </Container>
