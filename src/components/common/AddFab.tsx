@@ -36,7 +36,7 @@ export const AddFab = () => {
         sx={{ position: 'fixed', bottom: 80, right: 16 }}
       >
         <Zoom in={true} timeout={300}>
-          <Fab color="info" onClick={handleOpen}>
+          <Fab color="primary" sx={{ color: 'white' }} onClick={handleOpen}>
             <AddIcon
               sx={rotateIcon ? { animation: `${rotate} 0.5s linear` } : {}}
             />

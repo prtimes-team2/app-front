@@ -2,12 +2,15 @@ import { Settings } from '@mui/icons-material';
 import {
   Avatar,
   Box,
+  Button,
   Container,
   IconButton,
   Tab,
   Tabs,
   Typography,
 } from '@mui/material';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+
 import React, { useContext, useEffect } from 'react';
 import CountUp from 'react-countup';
 import { Link } from 'react-router-dom';
@@ -101,11 +104,25 @@ const Profile = () => {
               <Typography variant="body2" component="div" marginLeft={2}>
                 コイン
               </Typography>
-              <Link to={'/app/coinlog'}>
-                <Typography variant="body2" component="div" marginLeft={2}>
+            </Box>
+            <Box
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems="center"
+              sx={{ marginTop: 1 }}
+            >
+              <Button
+                variant="outlined"
+                size="small"
+                component={Link}
+                to={'/app/coinlog'}
+                sx={{ borderRadius: '16px' }}
+              >
+                <Typography variant="body2" component="div">
                   履歴
                 </Typography>
-              </Link>
+                <ArrowRightAltIcon />
+              </Button>
             </Box>
           </Box>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
