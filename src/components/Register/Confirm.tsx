@@ -1,5 +1,6 @@
 import { Box, Button, Card, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import liff from '@line/liff';
 
 import { getAddress } from '../../lib/getAddress';
 import { japan } from '../../lib/japan';
@@ -87,7 +88,9 @@ export const Confirm = (prop: propsType) => {
     const requestUrl =
       baseUrl +
       '/user' +
-      `?idToken=id_token&gender=${jender.id}&city=${city.name}&prefecture=${prefecture.name}&birth=${inputDate}`;
+      `?idToken=${liff.getIDToken() ?? 'id_token'}&gender=${jender.id}&city=${
+        city.name
+      }&prefecture=${prefecture.name}&birth=${inputDate}`;
 
     console.log(requestUrl, 'requestUrl');
 
