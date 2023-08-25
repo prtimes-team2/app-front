@@ -16,8 +16,15 @@ import { ImageInput } from './ImageInput';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Map, { Marker } from 'react-map-gl';
+import mapboxgl from 'mapbox-gl';
 
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+mapboxgl.workerClass =
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 interface Props {
   handleResult: (value: boolean, amount: number) => void;

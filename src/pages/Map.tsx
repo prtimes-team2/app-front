@@ -17,6 +17,13 @@ import { AuthContext } from '../contexts/AuthContexts';
 import { Loading } from '../components/Loading';
 import { Report } from '../types/report';
 
+import mapboxgl from 'mapbox-gl';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+mapboxgl.workerClass =
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+
 const AppMap = () => {
   const navigate = useNavigate();
   const { reports } = useContext(AuthContext);
