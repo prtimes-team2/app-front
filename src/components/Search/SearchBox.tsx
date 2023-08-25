@@ -104,7 +104,9 @@ export const SearchBox = () => {
         lat: 0,
         lng: 0,
         tags: {},
-        imageUrls: {},
+        imageUrls: {
+          0: press.main_image,
+        },
         created_at: '',
         user_id: press.url,
       });
