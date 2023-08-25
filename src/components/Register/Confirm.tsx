@@ -1,9 +1,6 @@
 import { Box, Button, Card, Typography } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
 import liff from '@line/liff';
 
-import { getAddress } from '../../lib/getAddress';
-import { japan } from '../../lib/japan';
 import { jenderArr } from '../../lib/jender';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,17 +25,6 @@ const style = {
 
 export const Confirm = (prop: propsType) => {
   const navigate = useNavigate();
-  const prefecture = japan.find((obj) => (obj.id = prop.prefecture));
-
-  const citiesArr = useQuery(['cities', prefecture], () =>
-    getAddress.getCitiesArr(getAddress.getPrefId(prop.prefecture))
-  );
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  let city: { id: string; name: string } | undefined;
-  if (citiesArr && citiesArr.data) {
-    city = citiesArr.data.find((obj: { id: string }) => obj.id === prop.city);
-  }
 
   const jender = jenderArr[prop.jender];
 
@@ -53,18 +39,19 @@ export const Confirm = (prop: propsType) => {
     console.log('submit');
     console.log(prop.birthday, 'prop.birthday');
     console.log(jender, 'jender');
-    if (!city) {
+
+    if (!prop.city) {
       throw new Error('city is undefined');
     }
-    if (!prefecture) {
+    if (!prop.prefecture) {
       throw new Error('prefecture is undefined');
     }
     if (!prop.birthday) {
       throw new Error('birthday is undefined');
     }
 
-    console.log(city, 'city');
-    console.log(prefecture, 'prefecture');
+    console.log(prop.city, 'city');
+    console.log(prop.prefecture, 'prefecture');
 
     const inputDate = `${new Date(prop.birthday).getFullYear()}-${
       new Date(prop.birthday).getMonth() + 1
@@ -123,13 +110,13 @@ export const Confirm = (prop: propsType) => {
           <Box sx={{ display: 'flex' }} alignItems={'flex-end'} pb={1}>
             <Typography variant="subtitle1">地元の県：</Typography>
             <Typography variant="subtitle1" fontWeight={'bold'}>
-              {prefecture?.name}
+              {prop.prefecture}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex' }} alignItems={'flex-end'} pb={1}>
             <Typography variant="subtitle1">地元の市：</Typography>
             <Typography variant="subtitle1" fontWeight={'bold'}>
-              {city?.name}
+              {prop.city}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex' }} alignItems={'flex-end'} pb={1}>
