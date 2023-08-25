@@ -1,4 +1,5 @@
 import liff from '@line/liff';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SendIcon from '@mui/icons-material/Send';
 import {
   Box,
@@ -8,10 +9,15 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContexts';
 import { uploadImage } from '../../useFirebaseClient';
 import { ImageInput } from './ImageInput';
+
+import 'mapbox-gl/dist/mapbox-gl.css';
+import Map, { Marker } from 'react-map-gl';
+
+import MapboxLanguage from '@mapbox/mapbox-gl-language';
 
 interface Props {
   handleResult: (value: boolean, amount: number) => void;
@@ -27,6 +33,82 @@ export const Place = (prop: Props) => {
   const [imageData, setImageData] = useState<File>();
   const [localImage, setLocalImage] = useState<string>();
   const [loading, setLoading] = useState(false);
+  const map = useRef(null);
+  const markerRef = useRef(null);
+
+  const mapToken = process.env.REACT_APP_MAPBOX_TOKEN;
+
+  if (!mapToken) {
+    throw new Error('Mapbox Token is not defined');
+  }
+  // 現在地の取得
+  const [viewport, setViewport] = useState({
+    latitude: 35.681236,
+    longitude: 139.767125,
+  });
+
+  const [marker, setMarker] = useState({
+    latitude: 37.7749,
+    longitude: -122.4194,
+    offsetLeft: -10,
+    offsetTop: -10,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const onMarkerDragEnd = (event) => {
+    const lngLat = event.target.getLngLat();
+    setMarker({
+      offsetLeft: -10,
+      offsetTop: -10,
+      longitude: lngLat.lng,
+      latitude: lngLat.lat,
+    });
+  };
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        console.log(pos);
+        setViewport({
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+        });
+        setMarker({
+          offsetLeft: -10,
+          offsetTop: -10,
+          longitude: pos.coords.longitude,
+          latitude: pos.coords.latitude,
+        });
+      },
+      (err) => {
+        console.log(err);
+        // 現在地が取れない時は東京駅の緯度軽度を入れる
+        setViewport({
+          latitude: 35.681236,
+          longitude: 139.767125,
+        }),
+          setMarker({
+            offsetLeft: -10,
+            offsetTop: -10,
+            longitude: 139.767125,
+            latitude: 35.681236,
+          });
+        console.log(err);
+      }
+    );
+  }, []);
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  function onLoadMap(e) {
+    const map = e?.target;
+    if (map) {
+      // 言語設定
+      const language = new MapboxLanguage();
+      map.addControl(language);
+    }
+  }
 
   function handleFileChange(id: number) {
     return (file: File) => {
@@ -118,7 +200,7 @@ export const Place = (prop: Props) => {
       spacing={2}
       sx={{
         m: 2,
-        width: '25ch',
+        width: '100%',
         display: 'flex',
         alignContent: 'center',
         alignItems: 'center',
@@ -156,6 +238,31 @@ export const Place = (prop: Props) => {
           <ImageInput url={localImageArray[2]} onChange={handleFileChange(3)} id={3}/> */}
           </Box>
         </Container>
+        {/* mapを持ってくる */}
+        {viewport.latitude !== 0 && viewport.longitude !== 0 ? (
+          <Map
+            ref={map}
+            mapboxAccessToken={mapToken}
+            initialViewState={{
+              longitude: viewport.longitude,
+              latitude: viewport.latitude,
+              zoom: 14,
+            }}
+            style={{ width: '100%', height: '450px' }}
+            mapStyle="mapbox://styles/mapbox/streets-v11"
+            onLoad={() => onLoadMap}
+          >
+            <Marker
+              ref={markerRef}
+              latitude={marker.latitude}
+              longitude={marker.longitude}
+              draggable
+              onDragEnd={onMarkerDragEnd}
+            >
+              <LocationOnIcon sx={{ color: 'blue', fontSize: 40 }} />
+            </Marker>
+          </Map>
+        ) : null}
         <Button
           disabled={loading}
           variant="outlined"
