@@ -13,6 +13,7 @@ const Search = lazy(() => import('../pages/Search'));
 const User = lazy(() => import('../pages/User'));
 const Register = lazy(() => import('../pages/Register'));
 const CoinLog = lazy(() => import('../pages/CoinLog'));
+const QuestionDetail = lazy(() => import('../pages/QuestionDetail'));
 
 export const Router = () => {
   return (
@@ -32,6 +33,7 @@ export const Router = () => {
               <Route path="/app/map" element={<Map />} />
               <Route path="/app/home" element={<Home />} />
               <Route path="/app/detail/:id" element={<Detail />} />
+              <Route path="/app/question/:id" element={<QuestionDetail />} />
               <Route path="/app/search" element={<Search />} />
               <Route path="/app/user" element={<User />} />
               <Route path="/app/coinlog" element={<CoinLog />} />
