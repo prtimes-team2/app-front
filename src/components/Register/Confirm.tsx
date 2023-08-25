@@ -1,4 +1,5 @@
 import { Box, Button, Card, Typography } from '@mui/material';
+import liff from '@line/liff';
 
 import { jenderArr } from '../../lib/jender';
 import { useNavigate } from 'react-router-dom';
@@ -74,7 +75,9 @@ export const Confirm = (prop: propsType) => {
     const requestUrl =
       baseUrl +
       '/user' +
-      `?idToken=id_token&gender=${jender.id}&city=${prop.city}&prefecture=${prop.prefecture}&birth=${inputDate}`;
+      `?idToken=${liff.getIDToken() ?? 'id_token'}&gender=${jender.id}&city=${
+        city.name
+      }&prefecture=${prefecture.name}&birth=${inputDate}`;
 
     console.log(requestUrl, 'requestUrl');
 
