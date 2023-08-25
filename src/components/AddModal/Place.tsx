@@ -206,7 +206,7 @@ export const Place = (prop: Props) => {
         alignItems: 'center',
       }}
     >
-      <Stack spacing={2}>
+      <Stack spacing={2} sx={{ width: '100%' }}>
         <TextField
           disabled={loading}
           sx={{ width: '100%' }}
@@ -232,7 +232,7 @@ export const Place = (prop: Props) => {
           }
         />
         <Container>
-          <Box display="flex" justifyContent="space-between">
+          <Box display="flex" justifyContent="center">
             <ImageInput url={localImage ?? ''} onChange={handleFileChange(1)} />
             {/* <ImageInput url={localImageArray[1]} onChange={handleFileChange(2)} id={2}/>
           <ImageInput url={localImageArray[2]} onChange={handleFileChange(3)} id={3}/> */}
@@ -248,7 +248,7 @@ export const Place = (prop: Props) => {
               latitude: viewport.latitude,
               zoom: 14,
             }}
-            style={{ width: '100%', height: '450px' }}
+            style={{ width: 'fit', height: '400px' }}
             mapStyle="mapbox://styles/mapbox/streets-v11"
             onLoad={() => onLoadMap}
           >
@@ -269,6 +269,7 @@ export const Place = (prop: Props) => {
           endIcon={!loading ? <SendIcon /> : <CircularProgress />}
           type="submit"
           sx={{
+            alignSelf: 'center',
             borderRadius: 2,
             width: '75%',
           }}

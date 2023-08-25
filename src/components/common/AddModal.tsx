@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -31,6 +32,8 @@ const style = {
   borderRadius: '0.5rem',
   boxShadow: 24,
   p: 4,
+  overflowY: 'scroll',
+  maxHeight: '80vh',
 };
 
 const useInterval = (callback: () => void) => {
@@ -72,7 +75,7 @@ export const AddModal = (prop: Props) => {
         <span id="rewardId" style={{ width: '100%', height: '300' }} />
         {isResult ? (
           <Box sx={style}>
-            <Typography variant="h5" component="h2">
+            <Typography variant="h5" component="h2" alignContent={'center'}>
               投稿が完了しました
             </Typography>
             <Typography variant="h5" component="h2">
@@ -86,14 +89,15 @@ export const AddModal = (prop: Props) => {
                 marginTop: '1rem',
               }}
             >
-              <button
+              <Button
+                variant="outlined"
                 onClick={() => {
                   setIsResult(false);
                   prop.handleClose();
                 }}
               >
                 閉じる
-              </button>
+              </Button>
             </Box>
           </Box>
         ) : (
@@ -118,12 +122,14 @@ export const AddModal = (prop: Props) => {
                   }}
                   size="small"
                 >
-                  <InputLabel id="small-label"></InputLabel>
+                  <InputLabel id="small-label" sx={{ marginLeft: 2.5 }}>
+                    投稿
+                  </InputLabel>
                   <Select
                     labelId="small-label"
                     id="small"
                     value={age}
-                    label="Age"
+                    label="post"
                     onChange={handleChange}
                   >
                     <MenuItem value="place">場所</MenuItem>
@@ -131,7 +137,7 @@ export const AddModal = (prop: Props) => {
                   </Select>
                 </FormControl>
               </Box>
-              <Box display={'flex'}>
+              <Box display={'flex'} width={'100%'}>
                 {age === 'place' ? (
                   <Place
                     handleResult={(value, amount) => {
