@@ -6,6 +6,7 @@ import { MainCard } from '../common/MainCard';
 
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContexts';
+import { QuestionCard } from '../common/QuestionCard';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -71,15 +72,17 @@ export const Content = ({ value }: ContentProps) => {
         {/* questionsを.mapしてMainCardに入れる */}
         <Container maxWidth="sm">
           {questions.map((question) => (
-            <MainCard
+            <QuestionCard
               key={question.id}
-              postKey={question.id}
-              image="https://source.unsplash.com/random"
+              questionId={question.question_id}
+              profileImageUrl={question.profileImageUrl}
               address={question.address}
-              title={question.content}
+              content={question.content}
+              displayName={question.displayName}
               detail={question.city}
               isFavorite={favoriteIds.includes(question.id)}
               userId=""
+              reward={question.reward}
             />
           ))}
         </Container>
