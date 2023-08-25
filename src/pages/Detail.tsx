@@ -10,6 +10,7 @@ import {
 import { useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContexts';
+import liff from '@line/liff';
 
 const Detail = () => {
   const navigate = useNavigate();
@@ -37,7 +38,9 @@ const Detail = () => {
       };
 
       const requestUrl =
-        baseUrl + '/report' + `?idToken=id_token&reportId=${reportId}`;
+        baseUrl +
+        '/report' +
+        `?idToken=${liff.getIDToken() ?? 'id_token'}&reportId=${reportId}`;
 
       console.log(requestUrl, 'requestUrl');
 
