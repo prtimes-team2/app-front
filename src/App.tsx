@@ -1,29 +1,19 @@
-import { Button } from '@mui/material';
-import './App.css';
+import { useState } from 'react';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { ThemeProvider } from '@mui/material';
 
-function App() {
+import { theme } from './theme';
+import { Main } from './components/Main';
+
+const App = () => {
+  const [cliant] = useState(() => new QueryClient());
   return (
-    <div className="App">
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
-
-      <header className="App-header">
-        <Button variant="outlined">Material-UI ボタン</Button>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <QueryClientProvider client={cliant}>
+        <Main />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
